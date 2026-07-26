@@ -20,11 +20,12 @@ body {
 body.bg-space { background: radial-gradient(circle at center, #1e1b4b 0%, #090d16 100%); }
 body.bg-fire { background: radial-gradient(circle at center, #451a03 0%, #090d16 100%); }
 body.bg-cyber { background: radial-gradient(circle at center, #831843 0%, #090d16 100%); }
+body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16 100%); }
 
 .app-container {
     width: 100%;
-    max-width: 850px;
-    height: 560px;
+    max-width: 900px;
+    height: 600px;
     background: #111827;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -36,10 +37,29 @@ body.bg-cyber { background: radial-gradient(circle at center, #831843 0%, #090d1
 }
 
 /* RÁMEČKY Z OBCHODU */
-.app-container.frame-gold { border-color: #fbbf24; box-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
-.app-container.frame-neon { border-color: #38bdf8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
-.app-container.frame-ruby { border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
-.app-container.frame-emerald { border-color: #10b981; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+.app-container.frame-gold { border-color: #fbbf24; box-shadow: 0 0 25px rgba(251, 191, 36, 0.5); }
+.app-container.frame-neon { border-color: #38bdf8; box-shadow: 0 0 25px rgba(56, 189, 248, 0.5); }
+.app-container.frame-ruby { border-color: #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.5); }
+.app-container.frame-emerald { border-color: #10b981; box-shadow: 0 0 25px rgba(16, 185, 129, 0.5); }
+
+/* ANIMOVANÉ RÁMEČKY */
+.app-container.frame-rainbow {
+    border: 3px solid transparent;
+    border-image: linear-gradient(45deg, #red, #orange, #yellow, #green, #blue, #indigo, #violet) 1;
+    animation: rainbowBorder 3s linear infinite;
+    box-shadow: 0 0 30px rgba(236, 72, 153, 0.6);
+}
+
+.app-container.frame-void {
+    border-color: #a855f7;
+    box-shadow: 0 0 35px #a855f7, inset 0 0 15px #a855f7;
+    animation: voidPulse 2s infinite alternate;
+}
+
+@keyframes voidPulse {
+    0% { box-shadow: 0 0 20px #a855f7; }
+    100% { box-shadow: 0 0 45px #ec4899; }
+}
 
 .screen {
     position: absolute;
@@ -137,30 +157,19 @@ body.bg-cyber { background: radial-gradient(circle at center, #831843 0%, #090d1
     white-space: nowrap;
 }
 
-.shop-btn {
-    background: #2563eb;
-    color: #fff;
-}
+.shop-btn { background: #2563eb; color: #fff; }
 .shop-btn:hover { background: #1d4ed8; }
 
-.login-btn {
-    background: #3b82f6;
-    color: #fff;
-}
+.login-btn { background: #3b82f6; color: #fff; }
 .login-btn:hover { background: #2563eb; }
 
 .logout-btn {
-    width: 30px;
-    height: 30px;
-    font-size: 0.75rem;
+    width: 30px; height: 30px; font-size: 0.75rem;
     background: rgba(239, 68, 68, 0.2);
     border-color: rgba(239, 68, 68, 0.4);
     color: #f87171;
 }
-.logout-btn:hover {
-    background: rgba(239, 68, 68, 0.4);
-    color: #fff;
-}
+.logout-btn:hover { background: rgba(239, 68, 68, 0.4); color: #fff; }
 
 /* MENU OBSAH */
 .menu-content {
@@ -228,35 +237,50 @@ body.bg-cyber { background: radial-gradient(circle at center, #831843 0%, #090d1
     color: #fff !important;
 }
 
-/* FORMULÁŘE */
+/* VYCENTROVANÉ FORMULÁŘE NASTAVENÍ (OPRAVA DLE SCREENSHOTU) */
+.centered-setup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    width: 100%;
+}
+
 .setup-form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    flex: 1;
-    max-width: 400px;
+    gap: 12px;
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
 }
 
 .setup-form label {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: #94a3b8;
+    text-align: left;
+    margin-top: 4px;
 }
 
 .custom-input {
     background: rgba(0,0,0,0.3);
     border: 1px solid rgba(255,255,255,0.1);
-    padding: 10px 14px;
-    border-radius: 8px;
+    padding: 12px 16px;
+    border-radius: 10px;
     color: #fff;
-    font-size: 0.95rem;
+    font-size: 1rem;
     width: 100%;
+    text-align: center;
 }
 .custom-input:focus { outline: none; border-color: #3b82f6; }
 
 .setup-actions {
     display: flex;
     gap: 15px;
-    margin-top: 15px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 450px;
 }
 .setup-actions button {
     flex: 1;
@@ -266,11 +290,12 @@ body.bg-cyber { background: radial-gradient(circle at center, #831843 0%, #090d1
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 100px;
+    max-height: 120px;
     overflow-y: auto;
+    width: 100%;
 }
 
-/* HRACÍ PLOCHY */
+/* HERNÍ PLOCHY & VELKÁ PÍSMENA */
 .game-header {
     display: flex;
     justify-content: space-between;
@@ -306,35 +331,65 @@ body.bg-cyber { background: radial-gradient(circle at center, #831843 0%, #090d1
     font-size: 1rem;
 }
 
+/* ZVĚTŠENÍ PÍSMEN V HRÁCH */
 .target-key {
-    font-size: 3rem;
+    font-size: 4.5rem;
     font-weight: 900;
     color: #475569;
-    transition: 0.1s;
+    transition: 0.15s;
+    text-transform: uppercase;
 }
 
 .target-key.show-key {
     color: #38bdf8;
-    text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+    text-shadow: 0 0 25px rgba(56, 189, 248, 0.7);
 }
+
+/* BAREVNÉ STYLY PÍSMA Z OBCHODU */
+body.font-neon .target-key.show-key { color: #22c55e !important; text-shadow: 0 0 25px rgba(34, 197, 94, 0.8) !important; }
+body.font-gold .target-key.show-key { color: #fbbf24 !important; text-shadow: 0 0 25px rgba(251, 191, 36, 0.8) !important; }
+body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 0 25px rgba(236, 72, 153, 0.8) !important; }
 
 .target-key.winner-glow {
     color: #22c55e !important;
-    text-shadow: 0 0 30px rgba(34, 197, 94, 0.8) !important;
+    text-shadow: 0 0 35px rgba(34, 197, 94, 0.9) !important;
+    transform: scale(1.1);
 }
 
 .solo-target-container {
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: rgba(0,0,0,0.2);
     border-radius: 12px;
     border: 2px dashed rgba(255,255,255,0.1);
     cursor: pointer;
+    position: relative;
 }
 
-/* UPRAVENÝ A ROZŠÍŘENÝ OBCHOD */
+#solo-target {
+    font-size: 5.5rem; /* Zvětšení v tréninku */
+}
+
+/* VAROVÁNÍ A ODPOČET TRESTU V TRÉNINKU */
+.penalty-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(220, 38, 38, 0.85);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    z-index: 10;
+}
+
+/* OBCHOD SE SKINY & BOOSY */
 .shop-container {
     display: flex;
     flex-direction: column;
@@ -392,15 +447,15 @@ body.bg-cyber { background: radial-gradient(circle at center, #831843 0%, #090d1
     flex-direction: column;
     gap: 10px;
     border: 1px solid rgba(255,255,255,0.08);
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
 }
 
 /* MODÁLNÍ OKNA */
 .modal-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
@@ -412,12 +467,13 @@ body.bg-cyber { background: radial-gradient(circle at center, #831843 0%, #090d1
     background: #1f2937;
     padding: 25px;
     border-radius: 14px;
-    width: 350px;
+    width: 380px;
     border: 1px solid rgba(255,255,255,0.1);
     box-shadow: 0 15px 30px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
     gap: 12px;
+    text-align: center;
 }
 
 .modal-actions {
@@ -426,11 +482,9 @@ body.bg-cyber { background: radial-gradient(circle at center, #831843 0%, #090d1
     margin-top: 10px;
 }
 
-.modal-actions button {
-    flex: 1;
-}
+.modal-actions button { flex: 1; }
 
-/* HERNÍ TOAST NOTIFIKACE */
+/* HERNÍ NOTIFIKACE */
 .game-notification {
     position: absolute;
     bottom: 20px;
@@ -461,6 +515,4 @@ body.bg-cyber { background: radial-gradient(circle at center, #831843 0%, #090d1
     font-weight: 600;
 }
 
-.notification-content i {
-    color: #38bdf8;
-}
+.notification-content i { color: #38bdf8; }
