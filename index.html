@@ -49,76 +49,80 @@
         </div>
 
         <div id="screen-setup" class="screen">
-            <h2>Nastavení souboje</h2>
-            <div class="setup-form">
-                <label>Počet hráčů:</label>
-                <select id="players-count" class="custom-input">
-                    <option value="2">2 hráči</option>
-                    <option value="3">3 hráči</option>
-                    <option value="4">4 hráči</option>
-                </select>
+            <div class="centered-setup-container">
+                <h2 style="margin-bottom: 20px;">Nastavení souboje</h2>
+                <div class="setup-form">
+                    <label>Počet hráčů:</label>
+                    <select id="players-count" class="custom-input">
+                        <option value="2">2 hráči</option>
+                        <option value="3">3 hráči</option>
+                        <option value="4">4 hráči</option>
+                    </select>
 
-                <div id="players-names-grid">
-                    <input type="text" id="p1-name" placeholder="Hráč 1" maxlength="12" class="custom-input">
-                    <input type="text" id="p2-name" placeholder="Hráč 2" maxlength="12" class="custom-input">
-                </div>
+                    <div id="players-names-grid">
+                        <input type="text" id="p1-name" placeholder="Hráč 1" maxlength="12" class="custom-input">
+                        <input type="text" id="p2-name" placeholder="Hráč 2" maxlength="12" class="custom-input">
+                    </div>
 
-                <label>Režim ovládání:</label>
-                <select id="control-mode" class="custom-input">
-                    <option value="tap">Čistý Tap (Kdo dřív klikne)</option>
-                    <option value="keys">Klávesy (Reakce na znaky)</option>
-                </select>
+                    <label>Režim ovládání:</label>
+                    <select id="control-mode" class="custom-input">
+                        <option value="tap">Čistý Tap (Kdo dřív klikne)</option>
+                        <option value="keys">Klávesy (Reakce na znaky)</option>
+                    </select>
 
-                <div id="difficulty-box" style="display: none;">
-                    <label>Obtížnost znaků:</label>
-                    <select id="difficulty-level" class="custom-input">
-                        <option value="1">Lehká (ASDFJKL)</option>
-                        <option value="2">Střední (Celá abeceda)</option>
-                        <option value="3">Těžká (Abeceda + čísla)</option>
-                        <option value="4">Extrém (Speciální znaky)</option>
-                        <option value="5">Šílenost (Vše dohromady)</option>
+                    <div id="difficulty-box" style="display: none; flex-direction: column; gap: 4px;">
+                        <label>Obtížnost znaků:</label>
+                        <select id="difficulty-level" class="custom-input">
+                            <option value="1">Lehká (ASDFJKL)</option>
+                            <option value="2">Střední (Celá abeceda)</option>
+                            <option value="3">Těžká (Abeceda + čísla)</option>
+                            <option value="4">Extrém (Speciální znaky)</option>
+                            <option value="5">Šílenost (Vše dohromady)</option>
+                        </select>
+                    </div>
+
+                    <label>Počet bodů do výhry:</label>
+                    <select id="rounds-count" class="custom-input">
+                        <option value="5">5 bodů</option>
+                        <option value="10" selected>10 bodů</option>
+                        <option value="15">15 bodů</option>
                     </select>
                 </div>
-
-                <label>Počet bodů do výhry:</label>
-                <select id="rounds-count" class="custom-input">
-                    <option value="5">5 bodů</option>
-                    <option value="10" selected>10 bodů</option>
-                    <option value="15">15 bodů</option>
-                </select>
-            </div>
-            <div class="setup-actions">
-                <button id="setup-back-btn" class="menu-btn secondary-btn">Zpět</button>
-                <button id="setup-start-btn" class="menu-btn primary-btn">Spustit hru</button>
+                <div class="setup-actions">
+                    <button id="setup-back-btn" class="menu-btn secondary-btn">Zpět</button>
+                    <button id="setup-start-btn" class="menu-btn primary-btn">Spustit hru</button>
+                </div>
             </div>
         </div>
 
         <div id="screen-solo-setup" class="screen">
-            <h2>Nastavení tréninku</h2>
-            <div class="setup-form">
-                <label>Tvoje jméno:</label>
-                <input type="text" id="solo-name" placeholder="Trénující" maxlength="12" class="custom-input">
+            <div class="centered-setup-container">
+                <h2 style="margin-bottom: 20px;">Nastavení tréninku</h2>
+                <div class="setup-form">
+                    <label>Tvoje jméno:</label>
+                    <input type="text" id="solo-name" placeholder="Trénující" maxlength="12" class="custom-input">
 
-                <label>Styl tréninku:</label>
-                <select id="solo-mode-type" class="custom-input">
-                    <option value="tap">Rychlostní Tap (30 sekund)</option>
-                    <option value="keys">Psaní znaků na čas (30 sekund)</option>
-                </select>
-
-                <div id="solo-diff-box" style="display: none;">
-                    <label>Obtížnost znaků:</label>
-                    <select id="solo-diff-level" class="custom-input">
-                        <option value="1">Lehká (ASDFJKL)</option>
-                        <option value="2">Střední (Celá abeceda)</option>
-                        <option value="3">Těžká (Abeceda + čísla)</option>
-                        <option value="4">Extrém (Speciální znaky)</option>
-                        <option value="5">Šílenost (Vše dohromady)</option>
+                    <label>Styl tréninku:</label>
+                    <select id="solo-mode-type" class="custom-input">
+                        <option value="tap">Rychlostní Tap (30 sekund)</option>
+                        <option value="keys">Psaní znaků na čas (30 sekund)</option>
                     </select>
+
+                    <div id="solo-diff-box" style="display: none; flex-direction: column; gap: 4px;">
+                        <label>Obtížnost znaků:</label>
+                        <select id="solo-diff-level" class="custom-input">
+                            <option value="1">Lehká (ASDFJKL)</option>
+                            <option value="2">Střední (Celá abeceda)</option>
+                            <option value="3">Těžká (Abeceda + čísla)</option>
+                            <option value="4">Extrém (Speciální znaky)</option>
+                            <option value="5">Šílenost (Vše dohromady)</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="setup-actions">
-                <button id="solo-back-btn" class="menu-btn secondary-btn">Zpět</button>
-                <button id="solo-start-btn" class="menu-btn primary-btn">Začít trénovat</button>
+                <div class="setup-actions">
+                    <button id="solo-back-btn" class="menu-btn secondary-btn">Zpět</button>
+                    <button id="solo-start-btn" class="menu-btn primary-btn">Začít trénovat</button>
+                </div>
             </div>
         </div>
 
@@ -139,8 +143,13 @@
                 <div id="solo-timer"><i class="fa-regular fa-clock"></i> Čas: 30s</div>
                 <button id="quit-solo-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="solo-target-container">
+            <div class="solo-target-container" id="solo-target-box">
                 <div id="solo-target" class="target-key">TAP</div>
+                <div id="penalty-overlay" class="penalty-overlay" style="display: none;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; margin-bottom: 10px;"></i>
+                    <span>ŠPATNÁ KLÁVESA!</span>
+                    <span id="penalty-timer" style="font-size: 2.5rem; margin-top: 10px;">3</span>
+                </div>
             </div>
         </div>
 
@@ -149,17 +158,19 @@
             <div class="shop-container" style="margin-top: 15px;">
                 <div id="shop-items-grid" class="shop-grid">
                     </div>
-                <div class="setup-actions">
+                <div class="setup-actions" style="max-width: 100%;">
                     <button id="shop-back-btn" class="menu-btn secondary-btn">Zpět do menu</button>
                 </div>
             </div>
         </div>
 
         <div id="screen-stats" class="screen">
-            <h2>Konec hry!</h2>
-            <div id="stats-content" class="stats-box" style="margin-top: 15px;"></div>
-            <div class="setup-actions" style="margin-top: 20px;">
-                <button id="stats-back-btn" class="menu-btn primary-btn">Zpět do menu</button>
+            <div class="centered-setup-container">
+                <h2 style="margin-bottom: 15px;">Konec hry!</h2>
+                <div id="stats-content" class="stats-box"></div>
+                <div class="setup-actions">
+                    <button id="stats-back-btn" class="menu-btn primary-btn">Zpět do menu</button>
+                </div>
             </div>
         </div>
 
@@ -168,7 +179,7 @@
     <div id="modal-login" class="modal-overlay" style="display: none;">
         <div class="modal-box">
             <h3><i class="fa-solid fa-user-ninja"></i> Uživatelský profil</h3>
-            <p style="font-size: 0.85rem; color: #94a3b8;">Zadej své jméno pro ukládání coinů a statistik.</p>
+            <p style="font-size: 0.85rem; color: #94a3b8;">Zadej své jméno pro ukládání coinů a zakoupených předmětů.</p>
             <input type="text" id="auth-username-input" placeholder="Tvoje přezdívka" maxlength="12" class="custom-input">
             <div class="modal-actions">
                 <button id="login-cancel-btn" class="menu-btn secondary-btn">Zrušit</button>
@@ -183,7 +194,7 @@
             <p style="font-size: 0.9rem; color: #94a3b8; line-height: 1.4;">
                 <strong>Režim Tap:</strong> Klikni co nejrychleji po rozsvícení TEĎ.<br><br>
                 <strong>Režim Klávesy:</strong> Stiskni správnou klávesu podle znaku.<br><br>
-                <em>Pozor na falešné starty!</em>
+                <strong>Trénink:</strong> Špatná klávesa udělá 3s penalizaci a odečte coiny!
             </p>
             <button id="rules-close-btn" class="menu-btn primary-btn">Rozumím</button>
         </div>
