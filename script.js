@@ -27,6 +27,22 @@ function beep(freq, dur, type = 'sine', vol = 0.1) {
     } catch(e) {}
 }
 
+// Vlastní náhrada alertů (funguje jako hezká herní notifikace)
+function showNotification(text, iconClass = "fa-solid fa-circle-check") {
+    const notif = document.getElementById('game-notification');
+    const notifText = document.getElementById('notif-text');
+    const notifIcon = document.getElementById('notif-icon');
+    if (!notif || !notifText) return;
+
+    notifText.textContent = text;
+    if(notifIcon) notifIcon.className = iconClass;
+    
+    notif.classList.add('show');
+    setTimeout(() => {
+        notif.classList.remove('show');
+    }, 2500);
+}
+
 const screens = {};
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -117,14 +133,14 @@ function setupEventListeners() {
         if (!usernameInput) return;
         const username = usernameInput.value.trim();
         if (!username) {
-            alert("Zadej prosím své uživatelské jméno!");
+            showNotification("Zadej prosím své uživatelské jméno!", "fa-solid fa-triangle-exclamation");
             return;
         }
         userData.username = username;
         localStorage.setItem('speedTapUser', JSON.stringify(userData));
         if(modalLogin) modalLogin.style.display = 'none';
         updateUIUser();
-        alert("Přihlášeno jako: " + username);
+        showNotification("Přihlášeno jako: " + username);
     });
 
     safeClick('logout-btn', () => {
@@ -132,7 +148,7 @@ function setupEventListeners() {
         userData.coins = 100;
         localStorage.removeItem('speedTapUser');
         updateUIUser();
-        alert("Byl jsi odhlášen.");
+        showNotification("Byl jsi odhlášen.", "fa-solid fa-right-from-bracket");
     });
 
     safeClick('shop-open-btn', () => showScreen('shop'));
@@ -143,9 +159,9 @@ function setupEventListeners() {
             userData.coins -= cost;
             localStorage.setItem('speedTapUser', JSON.stringify(userData));
             updateUIUser();
-            alert("Skin byl úspěšně zakoupen!");
+            showNotification("Skin byl úspěšně zakoupen!");
         } else {
-            alert("Nemáš dostatek coinů!");
+            showNotification("Nemáš dostatek coinů!", "fa-solid fa-triangle-exclamation");
         }
     };
 
