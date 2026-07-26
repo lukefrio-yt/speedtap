@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <div class="app-container">
+    <div id="app-container" class="app-container">
         
         <div id="screen-menu" class="screen active">
             <div class="top-bar">
@@ -145,21 +145,13 @@
         </div>
 
         <div id="screen-shop" class="screen">
-            <h2><i class="fa-solid fa-store" style="color: #38bdf8;"></i> Obchod se skiny</h2>
-            <div class="shop-grid" style="margin-top: 15px;">
-                <div class="shop-item">
-                    <h4>Neonový blesk</h4>
-                    <p style="font-size: 0.8rem; color: #94a3b8;">Exkluzivní styl pozadí</p>
-                    <button class="action-btn primary-btn" onclick="buySkin('neon', 100)">Koupit (100 C)</button>
+            <h2><i class="fa-solid fa-store" style="color: #38bdf8;"></i> Obchod se skiny a doplňky</h2>
+            <div class="shop-container" style="margin-top: 15px;">
+                <div id="shop-items-grid" class="shop-grid">
+                    </div>
+                <div class="setup-actions">
+                    <button id="shop-back-btn" class="menu-btn secondary-btn">Zpět do menu</button>
                 </div>
-                <div class="shop-item">
-                    <h4>Zlatá koruna</h4>
-                    <p style="font-size: 0.8rem; color: #94a3b8;">Zlatý rámec profilu</p>
-                    <button class="action-btn primary-btn" onclick="buySkin('crown', 250)">Koupit (250 C)</button>
-                </div>
-            </div>
-            <div class="setup-actions" style="margin-top: 20px;">
-                <button id="shop-back-btn" class="menu-btn secondary-btn">Zpět do menu</button>
             </div>
         </div>
 
