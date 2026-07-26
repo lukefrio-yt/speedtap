@@ -11,12 +11,10 @@ let userData = localUser ? localUser : {
     equippedFrame: null,
     equippedBg: null,
     equippedFont: null,
-    activeBoost: 1 // Načtený násobič coinů
+    activeBoost: 1
 };
 
-// MNOHEM BOHATŠÍ OBCHOD (12+ POLOŽEK VČETNĚ ANIMACÍ & BOOSTŮ)
 const shopCatalog = [
-    // RÁMEČKY
     { id: 'frame-gold', name: 'Zlatý rámec', desc: 'Zlatá záře kolem celé aplikace', type: 'frame', price: 150, icon: 'fa-solid fa-crown', color: '#fbbf24' },
     { id: 'frame-neon', name: 'Neonový rámec', desc: 'Světlounce modrá neonová záře', type: 'frame', price: 100, icon: 'fa-solid fa-bolt', color: '#38bdf8' },
     { id: 'frame-ruby', name: 'Rubínový rámec', desc: 'Krvavě červená záře okrajů', type: 'frame', price: 200, icon: 'fa-solid fa-gem', color: '#ef4444' },
@@ -24,18 +22,15 @@ const shopCatalog = [
     { id: 'frame-rainbow', name: 'Duhový Rámec (Animovaný)', desc: 'Prestižní měnící se barvy!', type: 'frame', price: 600, icon: 'fa-solid fa-wand-magic-sparkles', color: '#ec4899' },
     { id: 'frame-void', name: 'Void / Temná Hmota', desc: 'Pulzující fialová aura', type: 'frame', price: 850, icon: 'fa-solid fa-atom', color: '#a855f7' },
 
-    // BARVY PÍSMA (ZNAKŮ)
     { id: 'font-neon', name: 'Zelené Písmo', desc: 'Písmena září neonově zeleně', type: 'font', price: 120, icon: 'fa-solid fa-font', color: '#22c55e' },
     { id: 'font-gold', name: 'Zlaté Písmo', desc: 'Královská zlatá barva znaků', type: 'font', price: 200, icon: 'fa-solid fa-font', color: '#fbbf24' },
     { id: 'font-pink', name: 'Cyber Pink Písmo', desc: 'Zářivá kybernetická růžová', type: 'font', price: 250, icon: 'fa-solid fa-font', color: '#ec4899' },
 
-    // POZADÍ
     { id: 'bg-space', name: 'Temný Vesmír', desc: 'Hluboké fialové vesmírné pozadí', type: 'bg', price: 250, icon: 'fa-solid fa-user-astronaut', color: '#a855f7' },
     { id: 'bg-fire', name: 'Ohnivé Peklo', desc: 'Temně teplé horké pozadí', type: 'bg', price: 250, icon: 'fa-solid fa-fire', color: '#f97316' },
     { id: 'bg-cyber', name: 'Kyberpunk', desc: 'Neonově magenta atmosféra', type: 'bg', price: 300, icon: 'fa-solid fa-vr-cardboard', color: '#ec4899' },
     { id: 'bg-gold', name: 'Královské Kasino', desc: 'Luxusní hnědo-zlatý nádech', type: 'bg', price: 400, icon: 'fa-solid fa-coins', color: '#fbbf24' },
 
-    // BOOSTY (JEDNORÁZOVÉ)
     { id: 'boost-2x', name: '2x Coin Boost', desc: 'Zdvojnásobí coiny z příští hry', type: 'boost', multiplier: 2, price: 80, icon: 'fa-solid fa-angles-up', color: '#22c55e' },
     { id: 'boost-3x', name: '3x MEGA Boost', desc: 'Ztrojnásobí coiny z příští hry!', type: 'boost', multiplier: 3, price: 180, icon: 'fa-solid fa-rocket', color: '#ef4444' }
 ];
@@ -92,7 +87,30 @@ document.addEventListener('DOMContentLoaded', () => {
     applyEquippedSkins();
     renderGameHistory();
     setupEventListeners();
+
+    autoResizeForLandscape();
 });
+
+// AUTOMATICKÁ DETEKCE A ZMENŠENÍ PRO MOBIL NALEŽATO
+function autoResizeForLandscape() {
+    const appContainer = document.getElementById('app-container');
+    if (!appContainer) return;
+
+    const windowHeight = window.innerHeight;
+    const windowWidth = window.innerWidth;
+    const isLandscape = windowWidth > windowHeight;
+
+    if (isLandscape && windowHeight < 550) {
+        document.body.classList.add('is-landscape-mobile');
+        appContainer.style.height = `${windowHeight - 8}px`;
+    } else {
+        document.body.classList.remove('is-landscape-mobile');
+        appContainer.style.height = '';
+    }
+}
+
+window.addEventListener('resize', autoResizeForLandscape);
+window.addEventListener('orientationchange', () => { setTimeout(autoResizeForLandscape, 100); });
 
 function showScreen(name) {
     Object.values(screens).forEach(s => { if(s) s.classList.remove('active'); });
@@ -137,7 +155,6 @@ function updateUIUser() {
     }
 }
 
-// LOGIKA OBCHODU - UŽ JEDNOU KOUPENÉ VĚCI SE NEMUSÍ KUPOVAT ZNOVU
 function renderShop() {
     const grid = document.getElementById('shop-items-grid');
     if (!grid) return;
@@ -203,7 +220,6 @@ window.handleShopClick = function(itemId) {
     const isOwned = userData.ownedItems.includes(itemId);
 
     if (isOwned) {
-        // Změna vybavení (již zakoupeno)
         if (item.type === 'frame') {
             userData.equippedFrame = (userData.equippedFrame === itemId) ? null : itemId;
         } else if (item.type === 'bg') {
@@ -216,7 +232,6 @@ window.handleShopClick = function(itemId) {
         renderShop();
         showNotification("Vzhled byl změněn!");
     } else {
-        // První nákup předmětu
         if (userData.coins >= item.price) {
             userData.coins -= item.price;
             userData.ownedItems.push(itemId);
@@ -248,7 +263,7 @@ function renderGameHistory() {
     listContainer.innerHTML = '';
     games.slice(-5).reverse().forEach((g) => {
         const item = document.createElement('div');
-        item.style.cssText = "font-size: 0.85rem; color: #94a3b8; padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between;";
+        item.style.cssText = "font-size: 0.8rem; color: #94a3b8; padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between;";
         if (g.type === 'solo') {
             item.innerHTML = `<span><i class="fa-solid fa-user"></i> Trénink (${g.name})</span> <span style="color: #38bdf8;">${g.score} tref</span>`;
         } else {
@@ -391,7 +406,7 @@ function setupEventListeners() {
             mode: soloModeTypeEl ? soloModeTypeEl.value : 'tap',
             diff: soloDiffLevelEl ? parseInt(soloDiffLevelEl.value) : 1,
             score: 0,
-            errors: 0, // Sledování chyb
+            errors: 0,
             timeLeft: 30,
             timerId: null,
             reactions: [],
@@ -593,12 +608,10 @@ function nextSoloPrompt() {
     activeGame.soloPromptTime = performance.now();
 }
 
-// LOGIKA CHYBY V TRÉNINKU (3 SEKUNDY PENALTA)
 function handleSoloInput(key = null) {
     if (activeGame.timeLeft <= 0 || activeGame.isPenalized) return;
 
     if (activeGame.mode === 'keys' && (!key || key.toUpperCase() !== activeGame.currentKey)) {
-        // Hráč stiskl ŠPATNOU KLÁVESU!
         activeGame.errors++;
         activeGame.isPenalized = true;
         beep(150, 0.4, 'sawtooth');
@@ -625,7 +638,6 @@ function handleSoloInput(key = null) {
         return;
     }
 
-    // Správná klávesa
     let rt = Math.round(performance.now() - activeGame.soloPromptTime);
     activeGame.reactions.push(rt);
     activeGame.score += 1;
@@ -644,7 +656,6 @@ function showStatsScreen() {
     
     let baseCoins = 0;
     if (activeGame.type === 'solo') {
-        // Trest za chyby: každá chyba odečte 2 coiny
         let errorPenalty = activeGame.errors * 2;
         baseCoins = Math.max(0, Math.floor(activeGame.score * (activeGame.mode === 'keys' ? 1.5 : 0.8)) - errorPenalty);
     } else {
@@ -653,12 +664,11 @@ function showStatsScreen() {
         baseCoins = maxScore * diffMultiplier * 2;
     }
 
-    // Aplikace násobiče z obchodu (2x / 3x Boost)
     let finalCoins = baseCoins * userData.activeBoost;
 
     userData.coins += finalCoins;
     let usedBoostMultiplier = userData.activeBoost;
-    userData.activeBoost = 1; // Boost se po zápasu spotřebuje
+    userData.activeBoost = 1;
 
     localStorage.setItem('speedTapUser', JSON.stringify(userData));
     games.push(activeGame);
@@ -672,7 +682,7 @@ function showStatsScreen() {
             <p><strong><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Počet chyb:</strong> ${activeGame.errors} (Penalta)</p>
             <p><strong><i class="fa-solid fa-stopwatch"></i> Průměrná reakce:</strong> ${avgReaction} ms</p>
             ${usedBoostMultiplier > 1 ? `<p style="color:#22c55e;"><strong><i class="fa-solid fa-rocket"></i> Použit Boost:</strong> ${usedBoostMultiplier}x</p>` : ''}
-            <p style="color:#fbbf24; margin-top:5px; font-size: 1.1rem;"><strong><i class="fa-solid fa-coins"></i> Získané coiny:</strong> +${finalCoins} C</p>
+            <p style="color:#fbbf24; margin-top:5px; font-size: 1rem;"><strong><i class="fa-solid fa-coins"></i> Získané coiny:</strong> +${finalCoins} C</p>
         `;
     } else {
         let winner = activeGame.players.reduce((prev, current) => (prev.score > current.score) ? prev : current);
@@ -681,7 +691,7 @@ function showStatsScreen() {
             <p><strong><i class="fa-solid fa-stopwatch"></i> Průměrná reakce:</strong> ${avgReaction} ms</p>
             <p><strong><i class="fa-solid fa-triangle-exclamation"></i> Falešné starty:</strong> ${activeGame.falseStarts}</p>
             ${usedBoostMultiplier > 1 ? `<p style="color:#22c55e;"><strong><i class="fa-solid fa-rocket"></i> Použit Boost:</strong> ${usedBoostMultiplier}x</p>` : ''}
-            <p style="color:#fbbf24; margin-top:5px; font-size: 1.1rem;"><strong><i class="fa-solid fa-coins"></i> Získané coiny:</strong> +${finalCoins} C</p>
+            <p style="color:#fbbf24; margin-top:5px; font-size: 1rem;"><strong><i class="fa-solid fa-coins"></i> Získané coiny:</strong> +${finalCoins} C</p>
         `;
     }
     updateUIUser();
