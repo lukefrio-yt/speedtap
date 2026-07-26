@@ -91,21 +91,15 @@ document.addEventListener('DOMContentLoaded', () => {
     autoResizeForLandscape();
 });
 
-// AUTOMATICKÁ DETEKCE A ZMENŠENÍ PRO MOBIL NALEŽATO
 function autoResizeForLandscape() {
-    const appContainer = document.getElementById('app-container');
-    if (!appContainer) return;
-
     const windowHeight = window.innerHeight;
     const windowWidth = window.innerWidth;
     const isLandscape = windowWidth > windowHeight;
 
     if (isLandscape && windowHeight < 550) {
         document.body.classList.add('is-landscape-mobile');
-        appContainer.style.height = `${windowHeight - 8}px`;
     } else {
         document.body.classList.remove('is-landscape-mobile');
-        appContainer.style.height = '';
     }
 }
 
@@ -427,9 +421,13 @@ function setupEventListeners() {
 
     const soloTargetBox = document.getElementById('solo-target-box');
     if (soloTargetBox) {
-        soloTargetBox.onpointerdown = () => {
+        soloTargetBox.onpointerdown = (e) => {
             if (screens.soloGame && screens.soloGame.classList.contains('active') && activeGame && activeGame.mode === 'tap') {
-                handleSoloInput();
+                if (e.target.classList.contains('target-circle')) {
+                    handleSoloInput(true);
+                } else if (!e.target.closest('#penalty-overlay')) {
+                    triggerPenalty();
+                }
             }
         };
     }
@@ -580,8 +578,6 @@ function startSoloGame() {
     if(scoreEl) scoreEl.textContent = 0;
     if(timerEl) timerEl.innerHTML = `<i class="fa-regular fa-clock"></i> Čas: 30s`;
 
-    const target = document.getElementById('solo-target');
-    if(target) target.classList.add('show-key');
     nextSoloPrompt();
 
     activeGame.timerId = setInterval(() => {
@@ -595,47 +591,85 @@ function startSoloGame() {
 }
 
 function nextSoloPrompt() {
+    const box = document.getElementById('solo-target-box');
     const target = document.getElementById('solo-target');
-    if (!target) return;
+    if (!box || !target) return;
 
     if (activeGame.mode === 'keys') {
+        target.style.display = 'block';
+        const oldCircle = box.querySelector('.target-circle');
+        if (oldCircle) oldCircle.remove();
+
         const charset = diffKeys[activeGame.diff];
         activeGame.currentKey = charset[Math.floor(Math.random() * charset.length)];
         target.textContent = activeGame.currentKey;
+        target.classList.add('show-key');
     } else {
-        target.textContent = "TAP";
+        target.style.display = 'none';
+        const oldCircle = box.querySelector('.target-circle');
+        if (oldCircle) oldCircle.remove();
+
+        const circle = document.createElement('div');
+        circle.className = 'target-circle';
+
+        const boxRect = box.getBoundingClientRect();
+        const circleSize = window.innerWidth > 600 ? 90 : 70;
+
+        const maxLeft = Math.max(10, boxRect.width - circleSize - 20);
+        const maxTop = Math.max(10, boxRect.height - circleSize - 20);
+
+        const randomLeft = Math.floor(Math.random() * maxLeft);
+        const randomTop = Math.floor(Math.random() * maxTop);
+
+        circle.style.left = `${randomLeft}px`;
+        circle.style.top = `${randomTop}px`;
+
+        box.appendChild(circle);
     }
     activeGame.soloPromptTime = performance.now();
 }
 
-function handleSoloInput(key = null) {
+function triggerPenalty() {
+    if (activeGame.isPenalized) return;
+    
+    activeGame.errors++;
+    activeGame.isPenalized = true;
+    beep(150, 0.4, 'sawtooth');
+
+    const overlay = document.getElementById('penalty-overlay');
+    const penaltyTimer = document.getElementById('penalty-timer');
+    if (overlay && penaltyTimer) {
+        overlay.style.display = 'flex';
+        let countdown = 3;
+        penaltyTimer.textContent = countdown;
+
+        let penaltyInterval = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                penaltyTimer.textContent = countdown;
+            } else {
+                clearInterval(penaltyInterval);
+                overlay.style.display = 'none';
+                activeGame.isPenalized = false;
+                nextSoloPrompt();
+            }
+        }, 1000);
+    }
+}
+
+function handleSoloInput(inputArg = null) {
     if (activeGame.timeLeft <= 0 || activeGame.isPenalized) return;
 
-    if (activeGame.mode === 'keys' && (!key || key.toUpperCase() !== activeGame.currentKey)) {
-        activeGame.errors++;
-        activeGame.isPenalized = true;
-        beep(150, 0.4, 'sawtooth');
-
-        const overlay = document.getElementById('penalty-overlay');
-        const penaltyTimer = document.getElementById('penalty-timer');
-        if (overlay && penaltyTimer) {
-            overlay.style.display = 'flex';
-            let countdown = 3;
-            penaltyTimer.textContent = countdown;
-
-            let penaltyInterval = setInterval(() => {
-                countdown--;
-                if (countdown > 0) {
-                    penaltyTimer.textContent = countdown;
-                } else {
-                    clearInterval(penaltyInterval);
-                    overlay.style.display = 'none';
-                    activeGame.isPenalized = false;
-                    nextSoloPrompt();
-                }
-            }, 1000);
+    if (activeGame.mode === 'keys') {
+        if (!inputArg || typeof inputArg !== 'string' || inputArg.toUpperCase() !== activeGame.currentKey) {
+            triggerPenalty();
+            return;
         }
-        return;
+    } else {
+        if (inputArg !== true) {
+            triggerPenalty();
+            return;
+        }
     }
 
     let rt = Math.round(performance.now() - activeGame.soloPromptTime);
