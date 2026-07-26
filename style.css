@@ -11,9 +11,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    min-height: 100dvh;
-    padding: 12px;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    padding: 0;
+    margin: 0;
     transition: background 0.3s ease;
     overflow: hidden;
 }
@@ -24,20 +26,29 @@ body.bg-fire { background: radial-gradient(circle at center, #451a03 0%, #090d16
 body.bg-cyber { background: radial-gradient(circle at center, #831843 0%, #090d16 100%); }
 body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16 100%); }
 
-/* HLAVNÍ KONTAJNER APLIKACE S VIDITELNÝM RÁMEČKEM */
+/* HLAVNÍ KONTAJNER APLIKACE S RÁMEČKEM LÍCUJÍCÍM K OKRAJŮM */
 .app-container {
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
     max-width: 900px;
-    height: 90vh;
-    max-height: 560px;
+    max-height: 100%;
     background: #111827;
-    border-radius: 20px;
+    border-radius: 0;
     box-shadow: 0 10px 30px rgba(0,0,0,0.6);
     border: 2px solid rgba(255, 255, 255, 0.15);
     position: relative;
     overflow: hidden;
     display: flex;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (min-width: 900px) and (min-height: 600px) {
+    .app-container {
+        height: 92vh;
+        max-height: 580px;
+        border-radius: 20px;
+    }
 }
 
 /* RÁMEČKY Z OBCHODU */
@@ -72,7 +83,7 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
     height: 100%;
     display: none;
     flex-direction: column;
-    padding: 20px;
+    padding: 16px;
     background: #111827;
     overflow: hidden;
 }
@@ -86,7 +97,7 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     width: 100%;
     flex-shrink: 0;
 }
@@ -168,11 +179,11 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
 }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.4); color: #fff; }
 
-/* MENU OBSAH A OKRAJ SÍNĚ SLÁVY */
+/* MENU OBSAH A SÍŇ SLÁVY */
 .menu-content {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     flex: 1;
     min-height: 0;
     justify-content: space-between;
@@ -237,7 +248,7 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
     color: #fff !important;
 }
 
-/* VYCENTROVANÉ FORMULÁŘE NASTAVENÍ */
+/* FORMULÁŘE NASTAVENÍ */
 .centered-setup-container {
     display: flex;
     flex-direction: column;
@@ -292,7 +303,7 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
     width: 100%;
 }
 
-/* HERNÍ PLOCHY & VELKÁ PÍSMENA (ZVOLEN MANUÁLNĚ EXTRÉMNÍ NÁRŮST VELIKOSTI) */
+/* HERNÍ PLOCHY */
 .game-header {
     display: flex;
     justify-content: space-between;
@@ -328,9 +339,9 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
     font-size: 0.9rem;
 }
 
-/* BLESKOVĚ VELKÁ PÍSMENA V HRÁČSKÉM SOUBOJI */
+/* ZNAKY A VELKÁ PÍSMENA */
 .target-key {
-    font-size: 6.5rem; /* Zvětšeno z 3.5rem na 6.5rem! */
+    font-size: 6.5rem;
     font-weight: 900;
     color: #334155;
     transition: 0.15s;
@@ -343,7 +354,6 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
     text-shadow: 0 0 35px rgba(56, 189, 248, 0.9), 0 0 10px #38bdf8;
 }
 
-/* BAREVNÉ STYLY PÍSMA Z OBCHODU */
 body.font-neon .target-key.show-key { color: #22c55e !important; text-shadow: 0 0 35px rgba(34, 197, 94, 0.9) !important; }
 body.font-gold .target-key.show-key { color: #fbbf24 !important; text-shadow: 0 0 35px rgba(251, 191, 36, 0.9) !important; }
 body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 0 35px rgba(236, 72, 153, 0.9) !important; }
@@ -354,10 +364,10 @@ body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 
     transform: scale(1.15);
 }
 
+/* TRÉNINKOVÁ PLOCHA S KOLEČKY */
 .solo-target-container {
     flex: 1;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: rgba(0,0,0,0.25);
@@ -365,18 +375,40 @@ body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 
     border: 2px dashed rgba(255,255,255,0.15);
     cursor: pointer;
     position: relative;
+    overflow: hidden;
 }
 
 #solo-target {
-    font-size: 7.5rem; /* Zvětšeno na 7.5rem! */
+    font-size: 7.5rem;
     line-height: 1;
 }
 
-/* VAROVÁNÍ A ODPOČET TRESTU V TRÉNINKU */
+/* NÁHODNÁ KOLEČKA V TRÉNINKU */
+.target-circle {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle, #38bdf8 0%, #0284c7 100%);
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.8);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: popIn 0.15s ease-out;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+/* TRÉNINK - PENALIZACE */
 .penalty-overlay {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(220, 38, 38, 0.9);
+    background: rgba(220, 38, 38, 0.92);
     border-radius: 16px;
     display: flex;
     flex-direction: column;
@@ -385,7 +417,7 @@ body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 
     color: #fff;
     font-size: 1.2rem;
     font-weight: bold;
-    z-index: 10;
+    z-index: 20;
 }
 
 /* OBCHOD SE SKINY & BOOSTY */
@@ -510,80 +542,35 @@ body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 
     font-weight: 600;
 }
 
-/* CSS PODMÍNKA PRO AUTOMATICKÝ MOBILNÍ LANDSCAPE REŽIM */
+/* MOBILNÍ / NÍZKÉ DISPLEJE */
 body.is-landscape-mobile {
-    padding: 4px !important;
+    padding: 0 !important;
     overflow: hidden !important;
 }
 
 body.is-landscape-mobile .app-container {
-    max-height: 98vh !important;
-    border-radius: 12px !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
 }
 
 body.is-landscape-mobile .screen {
-    padding: 8px 14px !important;
+    padding: 8px 12px !important;
 }
 
 body.is-landscape-mobile .top-bar {
     margin-bottom: 4px !important;
 }
 
-body.is-landscape-mobile .logo-area h1 {
-    font-size: 1rem !important;
-}
-
-body.is-landscape-mobile .icon-btn {
-    width: 28px !important;
-    height: 28px !important;
-    font-size: 0.75rem !important;
-}
-
-body.is-landscape-mobile .action-btn {
-    padding: 3px 8px !important;
-    font-size: 0.7rem !important;
-}
-
 body.is-landscape-mobile .target-key {
-    font-size: 3.5rem !important; /* Na mobilu uzpůsobeno výšce displeje */
+    font-size: 3.5rem !important;
 }
 
 body.is-landscape-mobile #solo-target {
     font-size: 4rem !important;
 }
 
-body.is-landscape-mobile .setup-form {
-    gap: 4px !important;
-}
-
-body.is-landscape-mobile .setup-form label {
-    font-size: 0.72rem !important;
-}
-
-body.is-landscape-mobile .custom-input {
-    padding: 4px 8px !important;
-    font-size: 0.8rem !important;
-}
-
-body.is-landscape-mobile .setup-actions {
-    margin-top: 6px !important;
-}
-
-body.is-landscape-mobile .menu-btn {
-    padding: 8px 10px !important;
-    font-size: 0.8rem !important;
-}
-
-body.is-landscape-mobile .shop-grid {
-    gap: 6px !important;
-}
-
-body.is-landscape-mobile .shop-item {
-    padding: 6px !important;
-}
-
-body.is-landscape-mobile .stats-box {
-    padding: 8px !important;
-    gap: 4px !important;
-    font-size: 0.75rem !important;
+body.is-landscape-mobile .target-circle {
+    width: 70px !important;
+    height: 70px !important;
 }
