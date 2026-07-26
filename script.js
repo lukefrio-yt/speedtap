@@ -9,18 +9,35 @@ let userData = localUser ? localUser : {
     coins: 100,
     ownedItems: [],
     equippedFrame: null,
-    equippedBg: null
+    equippedBg: null,
+    equippedFont: null,
+    activeBoost: 1 // Načtený násobič coinů
 };
 
-// KATALOG POLOŽEK V OBCHODU
+// MNOHEM BOHATŠÍ OBCHOD (12+ POLOŽEK VČETNĚ ANIMACÍ & BOOSTŮ)
 const shopCatalog = [
-    { id: 'frame-gold', name: 'Zlatý rámec', desc: 'Zlatá záře kolem aplikace', type: 'frame', price: 150, icon: 'fa-solid fa-crown', color: '#fbbf24' },
-    { id: 'frame-neon', name: 'Neonový rámec', desc: 'Azurové zářící okraje', type: 'frame', price: 100, icon: 'fa-solid fa-bolt', color: '#38bdf8' },
-    { id: 'frame-ruby', name: 'Rubínový rámec', desc: 'Krvavě červená záře', type: 'frame', price: 200, icon: 'fa-solid fa-gem', color: '#ef4444' },
-    { id: 'frame-emerald', name: 'Smaragdový rámec', desc: 'Zelený zářící efekt', type: 'frame', price: 180, icon: 'fa-solid fa-leaf', color: '#10b981' },
-    { id: 'bg-space', name: 'Temný Vesmír', desc: 'Fialové vesmírné pozadí', type: 'bg', price: 250, icon: 'fa-solid fa-user-astronaut', color: '#a855f7' },
-    { id: 'bg-fire', name: 'Ohnivé Peklo', desc: 'Teplé temně oranžové pozadí', type: 'bg', price: 250, icon: 'fa-solid fa-fire', color: '#f97316' },
-    { id: 'bg-cyber', name: 'Kyberpunk', desc: 'Neonově růžové pozadí', type: 'bg', price: 300, icon: 'fa-solid fa-wand-magic-sparkles', color: '#ec4899' }
+    // RÁMEČKY
+    { id: 'frame-gold', name: 'Zlatý rámec', desc: 'Zlatá záře kolem celé aplikace', type: 'frame', price: 150, icon: 'fa-solid fa-crown', color: '#fbbf24' },
+    { id: 'frame-neon', name: 'Neonový rámec', desc: 'Světlounce modrá neonová záře', type: 'frame', price: 100, icon: 'fa-solid fa-bolt', color: '#38bdf8' },
+    { id: 'frame-ruby', name: 'Rubínový rámec', desc: 'Krvavě červená záře okrajů', type: 'frame', price: 200, icon: 'fa-solid fa-gem', color: '#ef4444' },
+    { id: 'frame-emerald', name: 'Smaragdový rámec', desc: 'Zelený svítivý efekt', type: 'frame', price: 180, icon: 'fa-solid fa-leaf', color: '#10b981' },
+    { id: 'frame-rainbow', name: 'Duhový Rámec (Animovaný)', desc: 'Prestižní měnící se barvy!', type: 'frame', price: 600, icon: 'fa-solid fa-wand-magic-sparkles', color: '#ec4899' },
+    { id: 'frame-void', name: 'Void / Temná Hmota', desc: 'Pulzující fialová aura', type: 'frame', price: 850, icon: 'fa-solid fa-atom', color: '#a855f7' },
+
+    // BARVY PÍSMA (ZNAKŮ)
+    { id: 'font-neon', name: 'Zelené Písmo', desc: 'Písmena září neonově zeleně', type: 'font', price: 120, icon: 'fa-solid fa-font', color: '#22c55e' },
+    { id: 'font-gold', name: 'Zlaté Písmo', desc: 'Královská zlatá barva znaků', type: 'font', price: 200, icon: 'fa-solid fa-font', color: '#fbbf24' },
+    { id: 'font-pink', name: 'Cyber Pink Písmo', desc: 'Zářivá kybernetická růžová', type: 'font', price: 250, icon: 'fa-solid fa-font', color: '#ec4899' },
+
+    // POZADÍ
+    { id: 'bg-space', name: 'Temný Vesmír', desc: 'Hluboké fialové vesmírné pozadí', type: 'bg', price: 250, icon: 'fa-solid fa-user-astronaut', color: '#a855f7' },
+    { id: 'bg-fire', name: 'Ohnivé Peklo', desc: 'Temně teplé horké pozadí', type: 'bg', price: 250, icon: 'fa-solid fa-fire', color: '#f97316' },
+    { id: 'bg-cyber', name: 'Kyberpunk', desc: 'Neonově magenta atmosféra', type: 'bg', price: 300, icon: 'fa-solid fa-vr-cardboard', color: '#ec4899' },
+    { id: 'bg-gold', name: 'Královské Kasino', desc: 'Luxusní hnědo-zlatý nádech', type: 'bg', price: 400, icon: 'fa-solid fa-coins', color: '#fbbf24' },
+
+    // BOOSTY (JEDNORÁZOVÉ)
+    { id: 'boost-2x', name: '2x Coin Boost', desc: 'Zdvojnásobí coiny z příští hry', type: 'boost', multiplier: 2, price: 80, icon: 'fa-solid fa-angles-up', color: '#22c55e' },
+    { id: 'boost-3x', name: '3x MEGA Boost', desc: 'Ztrojnásobí coiny z příští hry!', type: 'boost', multiplier: 3, price: 180, icon: 'fa-solid fa-rocket', color: '#ef4444' }
 ];
 
 const diffKeys = {
@@ -54,9 +71,7 @@ function showNotification(text, iconClass = "fa-solid fa-circle-check") {
     if(notifIcon) notifIcon.className = iconClass;
     
     notif.classList.add('show');
-    setTimeout(() => {
-        notif.classList.remove('show');
-    }, 2500);
+    setTimeout(() => { notif.classList.remove('show'); }, 2500);
 }
 
 const screens = {};
@@ -71,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     screens.stats = document.getElementById('screen-stats');
 
     if(!userData.ownedItems) userData.ownedItems = [];
+    if(!userData.activeBoost) userData.activeBoost = 1;
 
     updateUIUser();
     applyEquippedSkins();
@@ -79,12 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function showScreen(name) {
-    Object.values(screens).forEach(s => {
-        if(s) s.classList.remove('active');
-    });
-    if(screens[name]) {
-        screens[name].classList.add('active');
-    }
+    Object.values(screens).forEach(s => { if(s) s.classList.remove('active'); });
+    if(screens[name]) screens[name].classList.add('active');
 }
 
 function applyEquippedSkins() {
@@ -100,9 +112,8 @@ function applyEquippedSkins() {
 
     if (body) {
         body.className = '';
-        if (userData.equippedBg) {
-            body.classList.add(userData.equippedBg);
-        }
+        if (userData.equippedBg) body.classList.add(userData.equippedBg);
+        if (userData.equippedFont) body.classList.add(userData.equippedFont);
     }
 }
 
@@ -116,14 +127,17 @@ function updateUIUser() {
         loginBtn.style.display = 'none';
         const userDisplay = document.getElementById('logged-user-display');
         const coinsDisplay = document.getElementById('coins-display');
+        
+        let boostText = userData.activeBoost > 1 ? ` (${userData.activeBoost}x Boost)` : '';
         if(userDisplay) userDisplay.innerHTML = `<i class="fa-solid fa-user-ninja"></i> ${userData.username}`;
-        if(coinsDisplay) coinsDisplay.innerHTML = `<i class="fa-solid fa-coins"></i> ${userData.coins} C`;
+        if(coinsDisplay) coinsDisplay.innerHTML = `<i class="fa-solid fa-coins"></i> ${userData.coins} C${boostText}`;
     } else {
         infoBar.style.display = 'none';
         loginBtn.style.display = 'block';
     }
 }
 
+// LOGIKA OBCHODU - UŽ JEDNOU KOUPENÉ VĚCI SE NEMUSÍ KUPOVAT ZNOVU
 function renderShop() {
     const grid = document.getElementById('shop-items-grid');
     if (!grid) return;
@@ -132,7 +146,8 @@ function renderShop() {
     shopCatalog.forEach(item => {
         const isOwned = userData.ownedItems.includes(item.id);
         const isEquipped = (item.type === 'frame' && userData.equippedFrame === item.id) || 
-                           (item.type === 'bg' && userData.equippedBg === item.id);
+                           (item.type === 'bg' && userData.equippedBg === item.id) ||
+                           (item.type === 'font' && userData.equippedFont === item.id);
 
         const card = document.createElement('div');
         card.className = 'shop-item';
@@ -140,7 +155,13 @@ function renderShop() {
         let btnText = `Koupit (${item.price} C)`;
         let btnClass = 'action-btn primary-btn';
 
-        if (isOwned) {
+        if (item.type === 'boost') {
+            btnText = `Aktivovat (${item.price} C)`;
+            if (userData.activeBoost === item.multiplier) {
+                btnText = 'Aktivní!';
+                btnClass = 'action-btn equipped-btn';
+            }
+        } else if (isOwned) {
             if (isEquipped) {
                 btnText = 'Použito';
                 btnClass = 'action-btn equipped-btn';
@@ -165,27 +186,44 @@ window.handleShopClick = function(itemId) {
     const item = shopCatalog.find(i => i.id === itemId);
     if (!item) return;
 
+    if (item.type === 'boost') {
+        if (userData.coins >= item.price) {
+            userData.coins -= item.price;
+            userData.activeBoost = item.multiplier;
+            localStorage.setItem('speedTapUser', JSON.stringify(userData));
+            updateUIUser();
+            renderShop();
+            showNotification(`Aktivován ${item.name}!`);
+        } else {
+            showNotification("Nemáš dostatek coinů!", "fa-solid fa-triangle-exclamation");
+        }
+        return;
+    }
+
     const isOwned = userData.ownedItems.includes(itemId);
 
     if (isOwned) {
-        // Přepínání/vybavení
+        // Změna vybavení (již zakoupeno)
         if (item.type === 'frame') {
             userData.equippedFrame = (userData.equippedFrame === itemId) ? null : itemId;
         } else if (item.type === 'bg') {
             userData.equippedBg = (userData.equippedBg === itemId) ? null : itemId;
+        } else if (item.type === 'font') {
+            userData.equippedFont = (userData.equippedFont === itemId) ? null : itemId;
         }
         localStorage.setItem('speedTapUser', JSON.stringify(userData));
         applyEquippedSkins();
         renderShop();
         showNotification("Vzhled byl změněn!");
     } else {
-        // Nákup
+        // První nákup předmětu
         if (userData.coins >= item.price) {
             userData.coins -= item.price;
             userData.ownedItems.push(itemId);
             
             if (item.type === 'frame') userData.equippedFrame = itemId;
             if (item.type === 'bg') userData.equippedBg = itemId;
+            if (item.type === 'font') userData.equippedFont = itemId;
 
             localStorage.setItem('speedTapUser', JSON.stringify(userData));
             updateUIUser();
@@ -223,9 +261,7 @@ function renderGameHistory() {
 
 function safeClick(id, callback) {
     const el = document.getElementById(id);
-    if (el) {
-        el.onclick = callback;
-    }
+    if (el) el.onclick = callback;
 }
 
 function setupEventListeners() {
@@ -237,15 +273,13 @@ function setupEventListeners() {
         if(modalLogin) modalLogin.style.display = 'flex'; 
     });
     
-    safeClick('login-cancel-btn', () => { 
-        if(modalLogin) modalLogin.style.display = 'none'; 
-    });
+    safeClick('login-cancel-btn', () => { if(modalLogin) modalLogin.style.display = 'none'; });
 
     safeClick('auth-submit-btn', () => {
         if (!usernameInput) return;
         const username = usernameInput.value.trim();
         if (!username) {
-            showNotification("Zadej prosím své uživatelské jméno!", "fa-solid fa-triangle-exclamation");
+            showNotification("Zadej uživatelské jméno!", "fa-solid fa-triangle-exclamation");
             return;
         }
         userData.username = username;
@@ -261,16 +295,15 @@ function setupEventListeners() {
         userData.ownedItems = [];
         userData.equippedFrame = null;
         userData.equippedBg = null;
+        userData.equippedFont = null;
+        userData.activeBoost = 1;
         localStorage.removeItem('speedTapUser');
         updateUIUser();
         applyEquippedSkins();
-        showNotification("Byl jsi odhlášen.", "fa-solid fa-right-from-bracket");
+        showNotification("Byl jsi odhlášen.");
     });
 
-    safeClick('shop-open-btn', () => {
-        renderShop();
-        showScreen('shop');
-    });
+    safeClick('shop-open-btn', () => { renderShop(); showScreen('shop'); });
     safeClick('shop-back-btn', () => showScreen('menu'));
 
     const playersCountSelect = document.getElementById('players-count');
@@ -358,9 +391,11 @@ function setupEventListeners() {
             mode: soloModeTypeEl ? soloModeTypeEl.value : 'tap',
             diff: soloDiffLevelEl ? parseInt(soloDiffLevelEl.value) : 1,
             score: 0,
+            errors: 0, // Sledování chyb
             timeLeft: 30,
             timerId: null,
-            reactions: []
+            reactions: [],
+            isPenalized: false
         };
         startSoloGame();
     });
@@ -375,9 +410,9 @@ function setupEventListeners() {
         }
     };
 
-    const soloTarget = document.getElementById('solo-target');
-    if (soloTarget) {
-        soloTarget.onpointerdown = () => {
+    const soloTargetBox = document.getElementById('solo-target-box');
+    if (soloTargetBox) {
+        soloTargetBox.onpointerdown = () => {
             if (screens.soloGame && screens.soloGame.classList.contains('active') && activeGame && activeGame.mode === 'tap') {
                 handleSoloInput();
             }
@@ -468,13 +503,6 @@ function nextMultiRound() {
     }, delay);
 }
 
-function getPointsForRound() {
-    if (activeGame.mode === 'tap') return 1;
-    if (activeGame.diff >= 4) return 3;
-    if (activeGame.diff >= 2) return 2;
-    return 1;
-}
-
 function handleFalseStart(playerIdx) {
     clearTimeout(timeoutId);
     gameState = 'result';
@@ -503,7 +531,7 @@ function handleMultiInput(winnerIdx, inputKey = null) {
     activeGame.reactions.push(reactionTime);
     
     beep(1000, 0.2, 'sine');
-    const pts = getPointsForRound();
+    const pts = activeGame.mode === 'keys' && activeGame.diff >= 3 ? 2 : 1;
     activeGame.players[winnerIdx - 1].score += pts;
 
     const targetEl = document.getElementById(`target-${winnerIdx}`);
@@ -528,7 +556,9 @@ function startSoloGame() {
     if(displayNameEl) displayNameEl.textContent = activeGame.name;
     
     activeGame.score = 0;
+    activeGame.errors = 0;
     activeGame.timeLeft = 30;
+    activeGame.isPenalized = false;
     
     const scoreEl = document.getElementById('solo-score');
     const timerEl = document.getElementById('solo-timer');
@@ -563,10 +593,39 @@ function nextSoloPrompt() {
     activeGame.soloPromptTime = performance.now();
 }
 
+// LOGIKA CHYBY V TRÉNINKU (3 SEKUNDY PENALTA)
 function handleSoloInput(key = null) {
-    if (activeGame.timeLeft <= 0) return;
-    if (activeGame.mode === 'keys' && (!key || key.toUpperCase() !== activeGame.currentKey)) return;
+    if (activeGame.timeLeft <= 0 || activeGame.isPenalized) return;
 
+    if (activeGame.mode === 'keys' && (!key || key.toUpperCase() !== activeGame.currentKey)) {
+        // Hráč stiskl ŠPATNOU KLÁVESU!
+        activeGame.errors++;
+        activeGame.isPenalized = true;
+        beep(150, 0.4, 'sawtooth');
+
+        const overlay = document.getElementById('penalty-overlay');
+        const penaltyTimer = document.getElementById('penalty-timer');
+        if (overlay && penaltyTimer) {
+            overlay.style.display = 'flex';
+            let countdown = 3;
+            penaltyTimer.textContent = countdown;
+
+            let penaltyInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    penaltyTimer.textContent = countdown;
+                } else {
+                    clearInterval(penaltyInterval);
+                    overlay.style.display = 'none';
+                    activeGame.isPenalized = false;
+                    nextSoloPrompt();
+                }
+            }, 1000);
+        }
+        return;
+    }
+
+    // Správná klávesa
     let rt = Math.round(performance.now() - activeGame.soloPromptTime);
     activeGame.reactions.push(rt);
     activeGame.score += 1;
@@ -583,16 +642,24 @@ function showStatsScreen() {
     
     let avgReaction = activeGame.reactions.length ? Math.round(activeGame.reactions.reduce((a,b)=>a+b,0) / activeGame.reactions.length) : 0;
     
-    let earnedCoins = 0;
+    let baseCoins = 0;
     if (activeGame.type === 'solo') {
-        earnedCoins = Math.floor(activeGame.score * (activeGame.mode === 'keys' ? 1 : 0.5));
+        // Trest za chyby: každá chyba odečte 2 coiny
+        let errorPenalty = activeGame.errors * 2;
+        baseCoins = Math.max(0, Math.floor(activeGame.score * (activeGame.mode === 'keys' ? 1.5 : 0.8)) - errorPenalty);
     } else {
         let diffMultiplier = activeGame.diff >= 4 ? 3 : (activeGame.diff >= 2 ? 2 : 1);
         let maxScore = Math.max(...activeGame.players.map(p => p.score));
-        earnedCoins = maxScore * diffMultiplier * 2;
+        baseCoins = maxScore * diffMultiplier * 2;
     }
 
-    userData.coins += earnedCoins;
+    // Aplikace násobiče z obchodu (2x / 3x Boost)
+    let finalCoins = baseCoins * userData.activeBoost;
+
+    userData.coins += finalCoins;
+    let usedBoostMultiplier = userData.activeBoost;
+    userData.activeBoost = 1; // Boost se po zápasu spotřebuje
+
     localStorage.setItem('speedTapUser', JSON.stringify(userData));
     games.push(activeGame);
     localStorage.setItem('speedTapGames', JSON.stringify(games));
@@ -602,8 +669,10 @@ function showStatsScreen() {
         content.innerHTML = `
             <p><strong><i class="fa-solid fa-gamepad"></i> Režim:</strong> Trénink (Solo)</p>
             <p><strong><i class="fa-solid fa-bolt"></i> Úspěšné trefy:</strong> ${activeGame.score}</p>
+            <p><strong><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Počet chyb:</strong> ${activeGame.errors} (Penalta)</p>
             <p><strong><i class="fa-solid fa-stopwatch"></i> Průměrná reakce:</strong> ${avgReaction} ms</p>
-            <p style="color:#fbbf24; margin-top:5px;"><strong><i class="fa-solid fa-coins"></i> Získané coiny:</strong> +${earnedCoins} C</p>
+            ${usedBoostMultiplier > 1 ? `<p style="color:#22c55e;"><strong><i class="fa-solid fa-rocket"></i> Použit Boost:</strong> ${usedBoostMultiplier}x</p>` : ''}
+            <p style="color:#fbbf24; margin-top:5px; font-size: 1.1rem;"><strong><i class="fa-solid fa-coins"></i> Získané coiny:</strong> +${finalCoins} C</p>
         `;
     } else {
         let winner = activeGame.players.reduce((prev, current) => (prev.score > current.score) ? prev : current);
@@ -611,7 +680,8 @@ function showStatsScreen() {
             <p><strong><i class="fa-solid fa-trophy" style="color:#fbbf24;"></i> Vítěz:</strong> ${winner.name} (${winner.score} bodů)</p>
             <p><strong><i class="fa-solid fa-stopwatch"></i> Průměrná reakce:</strong> ${avgReaction} ms</p>
             <p><strong><i class="fa-solid fa-triangle-exclamation"></i> Falešné starty:</strong> ${activeGame.falseStarts}</p>
-            <p style="color:#fbbf24; margin-top:5px;"><strong><i class="fa-solid fa-coins"></i> Získané coiny:</strong> +${earnedCoins} C</p>
+            ${usedBoostMultiplier > 1 ? `<p style="color:#22c55e;"><strong><i class="fa-solid fa-rocket"></i> Použit Boost:</strong> ${usedBoostMultiplier}x</p>` : ''}
+            <p style="color:#fbbf24; margin-top:5px; font-size: 1.1rem;"><strong><i class="fa-solid fa-coins"></i> Získané coiny:</strong> +${finalCoins} C</p>
         `;
     }
     updateUIUser();
