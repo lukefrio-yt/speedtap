@@ -27,7 +27,6 @@ function beep(freq, dur, type = 'sine', vol = 0.1) {
     } catch(e) {}
 }
 
-// Vlastní náhrada alertů (funguje jako hezká herní notifikace)
 function showNotification(text, iconClass = "fa-solid fa-circle-check") {
     const notif = document.getElementById('game-notification');
     const notifText = document.getElementById('notif-text');
