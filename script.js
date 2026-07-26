@@ -4,7 +4,24 @@ let gameState = 'waiting';
 let timeoutId = null;
 
 let localUser = JSON.parse(localStorage.getItem('speedTapUser')) || null;
-let userData = localUser ? localUser : { username: '', coins: 100 };
+let userData = localUser ? localUser : { 
+    username: '', 
+    coins: 100,
+    ownedItems: [],
+    equippedFrame: null,
+    equippedBg: null
+};
+
+// KATALOG POLOŽEK V OBCHODU
+const shopCatalog = [
+    { id: 'frame-gold', name: 'Zlatý rámec', desc: 'Zlatá záře kolem aplikace', type: 'frame', price: 150, icon: 'fa-solid fa-crown', color: '#fbbf24' },
+    { id: 'frame-neon', name: 'Neonový rámec', desc: 'Azurové zářící okraje', type: 'frame', price: 100, icon: 'fa-solid fa-bolt', color: '#38bdf8' },
+    { id: 'frame-ruby', name: 'Rubínový rámec', desc: 'Krvavě červená záře', type: 'frame', price: 200, icon: 'fa-solid fa-gem', color: '#ef4444' },
+    { id: 'frame-emerald', name: 'Smaragdový rámec', desc: 'Zelený zářící efekt', type: 'frame', price: 180, icon: 'fa-solid fa-leaf', color: '#10b981' },
+    { id: 'bg-space', name: 'Temný Vesmír', desc: 'Fialové vesmírné pozadí', type: 'bg', price: 250, icon: 'fa-solid fa-user-astronaut', color: '#a855f7' },
+    { id: 'bg-fire', name: 'Ohnivé Peklo', desc: 'Teplé temně oranžové pozadí', type: 'bg', price: 250, icon: 'fa-solid fa-fire', color: '#f97316' },
+    { id: 'bg-cyber', name: 'Kyberpunk', desc: 'Neonově růžové pozadí', type: 'bg', price: 300, icon: 'fa-solid fa-wand-magic-sparkles', color: '#ec4899' }
+];
 
 const diffKeys = {
     1: "ASDFJKL",
@@ -53,7 +70,10 @@ document.addEventListener('DOMContentLoaded', () => {
     screens.shop = document.getElementById('screen-shop');
     screens.stats = document.getElementById('screen-stats');
 
+    if(!userData.ownedItems) userData.ownedItems = [];
+
     updateUIUser();
+    applyEquippedSkins();
     renderGameHistory();
     setupEventListeners();
 });
@@ -64,6 +84,25 @@ function showScreen(name) {
     });
     if(screens[name]) {
         screens[name].classList.add('active');
+    }
+}
+
+function applyEquippedSkins() {
+    const appContainer = document.getElementById('app-container');
+    const body = document.body;
+
+    if (appContainer) {
+        appContainer.className = 'app-container';
+        if (userData.equippedFrame) {
+            appContainer.classList.add(userData.equippedFrame);
+        }
+    }
+
+    if (body) {
+        body.className = '';
+        if (userData.equippedBg) {
+            body.classList.add(userData.equippedBg);
+        }
     }
 }
 
@@ -84,6 +123,80 @@ function updateUIUser() {
         loginBtn.style.display = 'block';
     }
 }
+
+function renderShop() {
+    const grid = document.getElementById('shop-items-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    shopCatalog.forEach(item => {
+        const isOwned = userData.ownedItems.includes(item.id);
+        const isEquipped = (item.type === 'frame' && userData.equippedFrame === item.id) || 
+                           (item.type === 'bg' && userData.equippedBg === item.id);
+
+        const card = document.createElement('div');
+        card.className = 'shop-item';
+
+        let btnText = `Koupit (${item.price} C)`;
+        let btnClass = 'action-btn primary-btn';
+
+        if (isOwned) {
+            if (isEquipped) {
+                btnText = 'Použito';
+                btnClass = 'action-btn equipped-btn';
+            } else {
+                btnText = 'Použít';
+                btnClass = 'action-btn secondary-btn';
+            }
+        }
+
+        card.innerHTML = `
+            <div class="shop-item-info">
+                <h4><i class="${item.icon}" style="color: ${item.color};"></i> ${item.name}</h4>
+                <p>${item.desc}</p>
+            </div>
+            <button class="${btnClass}" onclick="handleShopClick('${item.id}')">${btnText}</button>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+window.handleShopClick = function(itemId) {
+    const item = shopCatalog.find(i => i.id === itemId);
+    if (!item) return;
+
+    const isOwned = userData.ownedItems.includes(itemId);
+
+    if (isOwned) {
+        // Přepínání/vybavení
+        if (item.type === 'frame') {
+            userData.equippedFrame = (userData.equippedFrame === itemId) ? null : itemId;
+        } else if (item.type === 'bg') {
+            userData.equippedBg = (userData.equippedBg === itemId) ? null : itemId;
+        }
+        localStorage.setItem('speedTapUser', JSON.stringify(userData));
+        applyEquippedSkins();
+        renderShop();
+        showNotification("Vzhled byl změněn!");
+    } else {
+        // Nákup
+        if (userData.coins >= item.price) {
+            userData.coins -= item.price;
+            userData.ownedItems.push(itemId);
+            
+            if (item.type === 'frame') userData.equippedFrame = itemId;
+            if (item.type === 'bg') userData.equippedBg = itemId;
+
+            localStorage.setItem('speedTapUser', JSON.stringify(userData));
+            updateUIUser();
+            applyEquippedSkins();
+            renderShop();
+            showNotification(`Zakoupeno: ${item.name}!`);
+        } else {
+            showNotification("Nemáš dostatek coinů!", "fa-solid fa-triangle-exclamation");
+        }
+    }
+};
 
 function renderGameHistory() {
     const listContainer = document.getElementById('game-list');
@@ -145,24 +258,20 @@ function setupEventListeners() {
     safeClick('logout-btn', () => {
         userData.username = '';
         userData.coins = 100;
+        userData.ownedItems = [];
+        userData.equippedFrame = null;
+        userData.equippedBg = null;
         localStorage.removeItem('speedTapUser');
         updateUIUser();
+        applyEquippedSkins();
         showNotification("Byl jsi odhlášen.", "fa-solid fa-right-from-bracket");
     });
 
-    safeClick('shop-open-btn', () => showScreen('shop'));
+    safeClick('shop-open-btn', () => {
+        renderShop();
+        showScreen('shop');
+    });
     safeClick('shop-back-btn', () => showScreen('menu'));
-
-    window.buySkin = function(skinType, cost) {
-        if (userData.coins >= cost) {
-            userData.coins -= cost;
-            localStorage.setItem('speedTapUser', JSON.stringify(userData));
-            updateUIUser();
-            showNotification("Skin byl úspěšně zakoupen!");
-        } else {
-            showNotification("Nemáš dostatek coinů!", "fa-solid fa-triangle-exclamation");
-        }
-    };
 
     const playersCountSelect = document.getElementById('players-count');
     if(playersCountSelect) {
