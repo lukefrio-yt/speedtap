@@ -13,7 +13,7 @@ body {
     align-items: center;
     min-height: 100vh;
     min-height: 100dvh;
-    padding: 10px;
+    padding: 12px;
     transition: background 0.3s ease;
     overflow: hidden;
 }
@@ -24,15 +24,16 @@ body.bg-fire { background: radial-gradient(circle at center, #451a03 0%, #090d16
 body.bg-cyber { background: radial-gradient(circle at center, #831843 0%, #090d16 100%); }
 body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16 100%); }
 
+/* HLAVNÍ KONTAJNER APLIKACE S VIDITELNÝM RÁMEČKEM */
 .app-container {
     width: 100%;
     max-width: 900px;
-    height: 94vh;
-    max-height: 600px;
+    height: 90vh;
+    max-height: 560px;
     background: #111827;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    border: 2px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    border: 2px solid rgba(255, 255, 255, 0.15);
     position: relative;
     overflow: hidden;
     display: flex;
@@ -45,10 +46,9 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
 .app-container.frame-ruby { border-color: #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.5); }
 .app-container.frame-emerald { border-color: #10b981; box-shadow: 0 0 25px rgba(16, 185, 129, 0.5); }
 
-/* ANIMOVANÉ RÁMEČKY */
 .app-container.frame-rainbow {
     border: 3px solid transparent;
-    border-image: linear-gradient(45deg, #red, #orange, #yellow, #green, #blue, #indigo, #violet) 1;
+    border-image: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet) 1;
     animation: rainbowBorder 3s linear infinite;
     box-shadow: 0 0 30px rgba(236, 72, 153, 0.6);
 }
@@ -72,9 +72,9 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
     height: 100%;
     display: none;
     flex-direction: column;
-    padding: 16px;
+    padding: 20px;
     background: #111827;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 .screen.active {
@@ -86,7 +86,7 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     width: 100%;
     flex-shrink: 0;
 }
@@ -98,7 +98,7 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
 }
 
 .logo-area h1 {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     letter-spacing: 1px;
     font-weight: 800;
 }
@@ -119,23 +119,16 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
     font-size: 0.8rem;
 }
 
-#logged-user-display {
-    color: #38bdf8;
-    font-weight: 600;
-}
-
-#coins-display {
-    color: #fbbf24;
-    font-weight: 600;
-}
+#logged-user-display { color: #38bdf8; font-weight: 600; }
+#coins-display { color: #fbbf24; font-weight: 600; }
 
 /* TLAČÍTKA */
 .icon-btn {
     background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
     color: #cbd5e1;
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -151,12 +144,12 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
 }
 
 .action-btn {
-    padding: 5px 10px;
+    padding: 6px 12px;
     border-radius: 8px;
     border: none;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     transition: 0.2s;
     white-space: nowrap;
 }
@@ -168,51 +161,54 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
 .login-btn:hover { background: #2563eb; }
 
 .logout-btn {
-    width: 26px; height: 26px; font-size: 0.7rem;
+    width: 28px; height: 28px; font-size: 0.75rem;
     background: rgba(239, 68, 68, 0.2);
     border-color: rgba(239, 68, 68, 0.4);
     color: #f87171;
 }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.4); color: #fff; }
 
-/* MENU OBSAH */
+/* MENU OBSAH A OKRAJ SÍNĚ SLÁVY */
 .menu-content {
     display: flex;
-    gap: 15px;
+    flex-direction: column;
+    gap: 12px;
     flex: 1;
     min-height: 0;
+    justify-content: space-between;
 }
 
 .history-box {
     flex: 1;
-    background: rgba(0,0,0,0.2);
-    border-radius: 12px;
-    padding: 10px;
-    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 14px;
+    padding: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
 
 .history-box h3 {
-    font-size: 0.85rem;
-    margin-bottom: 6px;
-    color: #cbd5e1;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: #f1f5f9;
+    text-align: center;
 }
 
 .menu-buttons {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    flex-shrink: 0;
 }
 
 .menu-btn {
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    font-size: 0.85rem;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+    font-size: 0.9rem;
     font-weight: bold;
     cursor: pointer;
     transition: 0.2s;
@@ -230,11 +226,11 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
 .primary-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6); }
 
 .secondary-btn {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
     color: #cbd5e1;
 }
-.secondary-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.secondary-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
 
 .equipped-btn {
     background: #10b981 !important;
@@ -254,9 +250,9 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
 .setup-form {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     width: 100%;
-    max-width: 380px;
+    max-width: 400px;
     margin: 0 auto;
 }
 
@@ -267,12 +263,12 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
 }
 
 .custom-input {
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 8px 12px;
-    border-radius: 8px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 10px 14px;
+    border-radius: 10px;
     color: #fff;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     width: 100%;
     text-align: center;
 }
@@ -281,41 +277,39 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
 .setup-actions {
     display: flex;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 14px;
     width: 100%;
-    max-width: 380px;
+    max-width: 400px;
 }
-.setup-actions button {
-    flex: 1;
-}
+.setup-actions button { flex: 1; }
 
 #players-names-grid {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    max-height: 80px;
+    max-height: 90px;
     overflow-y: auto;
     width: 100%;
 }
 
-/* HERNÍ PLOCHY & VELKÁ PÍSMENA */
+/* HERNÍ PLOCHY & VELKÁ PÍSMENA (ZVOLEN MANUÁLNĚ EXTRÉMNÍ NÁRŮST VELIKOSTI) */
 .game-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: bold;
 }
 
-.game-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; min-height: 0; }
-.game-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; flex: 1; min-height: 0; }
-.game-grid-4 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; flex: 1; min-height: 0; }
+.game-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; min-height: 0; }
+.game-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; flex: 1; min-height: 0; }
+.game-grid-4 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; flex: 1; min-height: 0; }
 
 .player-box {
     background: rgba(255,255,255,0.03);
-    border: 2px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -327,35 +321,37 @@ body.bg-gold { background: radial-gradient(circle at center, #78350f 0%, #090d16
 
 .player-box .p-info {
     position: absolute;
-    top: 6px;
+    top: 10px;
     display: flex;
     justify-content: space-between;
     width: 85%;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
+/* BLESKOVĚ VELKÁ PÍSMENA V HRÁČSKÉM SOUBOJI */
 .target-key {
-    font-size: 3.5rem;
+    font-size: 6.5rem; /* Zvětšeno z 3.5rem na 6.5rem! */
     font-weight: 900;
-    color: #475569;
+    color: #334155;
     transition: 0.15s;
     text-transform: uppercase;
+    line-height: 1;
 }
 
 .target-key.show-key {
     color: #38bdf8;
-    text-shadow: 0 0 25px rgba(56, 189, 248, 0.7);
+    text-shadow: 0 0 35px rgba(56, 189, 248, 0.9), 0 0 10px #38bdf8;
 }
 
 /* BAREVNÉ STYLY PÍSMA Z OBCHODU */
-body.font-neon .target-key.show-key { color: #22c55e !important; text-shadow: 0 0 25px rgba(34, 197, 94, 0.8) !important; }
-body.font-gold .target-key.show-key { color: #fbbf24 !important; text-shadow: 0 0 25px rgba(251, 191, 36, 0.8) !important; }
-body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 0 25px rgba(236, 72, 153, 0.8) !important; }
+body.font-neon .target-key.show-key { color: #22c55e !important; text-shadow: 0 0 35px rgba(34, 197, 94, 0.9) !important; }
+body.font-gold .target-key.show-key { color: #fbbf24 !important; text-shadow: 0 0 35px rgba(251, 191, 36, 0.9) !important; }
+body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 0 35px rgba(236, 72, 153, 0.9) !important; }
 
 .target-key.winner-glow {
     color: #22c55e !important;
-    text-shadow: 0 0 35px rgba(34, 197, 94, 0.9) !important;
-    transform: scale(1.1);
+    text-shadow: 0 0 45px rgba(34, 197, 94, 1) !important;
+    transform: scale(1.15);
 }
 
 .solo-target-container {
@@ -364,29 +360,30 @@ body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(0,0,0,0.2);
-    border-radius: 12px;
-    border: 2px dashed rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.25);
+    border-radius: 16px;
+    border: 2px dashed rgba(255,255,255,0.15);
     cursor: pointer;
     position: relative;
 }
 
 #solo-target {
-    font-size: 4rem;
+    font-size: 7.5rem; /* Zvětšeno na 7.5rem! */
+    line-height: 1;
 }
 
 /* VAROVÁNÍ A ODPOČET TRESTU V TRÉNINKU */
 .penalty-overlay {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(220, 38, 38, 0.85);
-    border-radius: 12px;
+    background: rgba(220, 38, 38, 0.9);
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     color: #fff;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: bold;
     z-index: 10;
 }
@@ -397,13 +394,13 @@ body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 
     flex-direction: column;
     flex: 1;
     min-height: 0;
-    gap: 10px;
+    gap: 12px;
 }
 
 .shop-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: 10px;
     overflow-y: auto;
     padding-right: 5px;
     flex: 1;
@@ -411,18 +408,18 @@ body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 
 
 .shop-item {
     background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-    padding: 8px;
-    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 10px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 6px;
+    gap: 8px;
     transition: 0.2s;
 }
 
 .shop-item-info h4 {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: #f8fafc;
     display: flex;
     align-items: center;
@@ -430,30 +427,30 @@ body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 
 }
 
 .shop-item-info p {
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     color: #94a3b8;
     line-height: 1.2;
 }
 
 .stats-box {
-    background: rgba(0,0,0,0.2);
-    padding: 12px;
-    border-radius: 10px;
+    background: rgba(0,0,0,0.3);
+    padding: 14px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    border: 1px solid rgba(255,255,255,0.08);
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,0.12);
     width: 100%;
     max-width: 380px;
     margin: 0 auto;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
 }
 
 /* MODÁLNÍ OKNA */
 .modal-overlay {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.75);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -462,22 +459,22 @@ body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 
 
 .modal-box {
     background: #1f2937;
-    padding: 15px;
-    border-radius: 12px;
+    padding: 18px;
+    border-radius: 14px;
     width: 90%;
-    max-width: 340px;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    max-width: 350px;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.6);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     text-align: center;
 }
 
 .modal-actions {
     display: flex;
     gap: 8px;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 .modal-actions button { flex: 1; }
@@ -485,15 +482,15 @@ body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 
 /* HERNÍ NOTIFIKACE */
 .game-notification {
     position: absolute;
-    bottom: 10px;
+    bottom: 15px;
     left: 50%;
     transform: translateX(-50%) translateY(50px);
     background: #1e293b;
     border: 1px solid #38bdf8;
     color: #fff;
-    padding: 6px 12px;
+    padding: 8px 16px;
     border-radius: 30px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     z-index: 200;
     opacity: 0;
     transition: 0.3s ease;
@@ -508,85 +505,85 @@ body.font-pink .target-key.show-key { color: #ec4899 !important; text-shadow: 0 
 .notification-content {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
+    gap: 8px;
+    font-size: 0.8rem;
     font-weight: 600;
 }
 
 /* CSS PODMÍNKA PRO AUTOMATICKÝ MOBILNÍ LANDSCAPE REŽIM */
 body.is-landscape-mobile {
-    padding: 2px !important;
+    padding: 4px !important;
     overflow: hidden !important;
 }
 
 body.is-landscape-mobile .app-container {
-    max-height: 100vh !important;
-    border-radius: 6px !important;
+    max-height: 98vh !important;
+    border-radius: 12px !important;
 }
 
 body.is-landscape-mobile .screen {
-    padding: 6px 12px !important;
+    padding: 8px 14px !important;
 }
 
 body.is-landscape-mobile .top-bar {
-    margin-bottom: 2px !important;
+    margin-bottom: 4px !important;
 }
 
 body.is-landscape-mobile .logo-area h1 {
-    font-size: 0.9rem !important;
+    font-size: 1rem !important;
 }
 
 body.is-landscape-mobile .icon-btn {
-    width: 26px !important;
-    height: 26px !important;
-    font-size: 0.7rem !important;
-}
-
-body.is-landscape-mobile .action-btn {
-    padding: 2px 6px !important;
-    font-size: 0.65rem !important;
-}
-
-body.is-landscape-mobile .target-key {
-    font-size: 2.2rem !important;
-}
-
-body.is-landscape-mobile #solo-target {
-    font-size: 2.6rem !important;
-}
-
-body.is-landscape-mobile .setup-form {
-    gap: 2px !important;
-}
-
-body.is-landscape-mobile .setup-form label {
-    font-size: 0.68rem !important;
-}
-
-body.is-landscape-mobile .custom-input {
-    padding: 3px 6px !important;
+    width: 28px !important;
+    height: 28px !important;
     font-size: 0.75rem !important;
 }
 
-body.is-landscape-mobile .setup-actions {
-    margin-top: 4px !important;
-}
-
-body.is-landscape-mobile .menu-btn {
-    padding: 6px 8px !important;
+body.is-landscape-mobile .action-btn {
+    padding: 3px 8px !important;
     font-size: 0.7rem !important;
 }
 
-body.is-landscape-mobile .shop-grid {
+body.is-landscape-mobile .target-key {
+    font-size: 3.5rem !important; /* Na mobilu uzpůsobeno výšce displeje */
+}
+
+body.is-landscape-mobile #solo-target {
+    font-size: 4rem !important;
+}
+
+body.is-landscape-mobile .setup-form {
     gap: 4px !important;
 }
 
+body.is-landscape-mobile .setup-form label {
+    font-size: 0.72rem !important;
+}
+
+body.is-landscape-mobile .custom-input {
+    padding: 4px 8px !important;
+    font-size: 0.8rem !important;
+}
+
+body.is-landscape-mobile .setup-actions {
+    margin-top: 6px !important;
+}
+
+body.is-landscape-mobile .menu-btn {
+    padding: 8px 10px !important;
+    font-size: 0.8rem !important;
+}
+
+body.is-landscape-mobile .shop-grid {
+    gap: 6px !important;
+}
+
 body.is-landscape-mobile .shop-item {
-    padding: 4px 6px !important;
+    padding: 6px !important;
 }
 
 body.is-landscape-mobile .stats-box {
-    padding: 6px !important;
-    gap: 2px !important;
-    font-size: 0.7rem !important;
+    padding: 8px !important;
+    gap: 4px !important;
+    font-size: 0.75rem !important;
 }
