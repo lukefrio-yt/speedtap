@@ -1,211 +1,1845 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speed Tap</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpeedTap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --bg-page: #f5f5f7;
+      --app-bg: #ffffff;
+      --surface: #f5f5f7;
+      --surface-elevated: #ffffff;
+      --surface-hover: #eaeaf0;
+      --text-main: #1d1d1f;
+      --text-sub: #6e6e73;
+      --border: rgba(0, 0, 0, 0.08);
+      --shadow: 0 12px 40px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.04);
+      --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+      --accent: #0071e3;
+      --accent-soft: rgba(0, 113, 227, 0.1);
+      --accent-green: #34c759;
+      --accent-orange: #ff9f0a;
+      --accent-red: #ff3b30;
+      --accent-purple: #af52de;
+      --focus-ring: rgba(0, 113, 227, 0.18);
+      --spring: cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #000000;
+      --app-bg: #1c1c1e;
+      --surface: #2c2c2e;
+      --surface-elevated: #242426;
+      --surface-hover: #3a3a3c;
+      --text-main: #f5f5f7;
+      --text-sub: #98989d;
+      --border: rgba(255, 255, 255, 0.1);
+      --shadow: 0 18px 48px rgba(0, 0, 0, 0.6);
+      --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
+      --accent: #0a84ff;
+      --accent-soft: rgba(10, 132, 255, 0.16);
+      --accent-green: #30d158;
+      --accent-orange: #ff9f0a;
+      --accent-red: #ff453a;
+      --accent-purple: #bf5af2;
+      --focus-ring: rgba(10, 132, 255, 0.25);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { max-width: 100%; overflow: hidden; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.3s var(--spring), color 0.3s var(--spring);
+    }
+
+    h1, h2, h3, h4, .display-font {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Plus Jakarta Sans", "Inter", sans-serif;
+      letter-spacing: -0.025em;
+    }
+
+    .mono {
+      font-family: "SF Mono", "JetBrains Mono", ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Shop Background Themes */
+    body.bg-space { background: linear-gradient(135deg, #1d1b38 0%, #090d16 100%); }
+    body.bg-fire { background: linear-gradient(135deg, #3b1908 0%, #120804 100%); }
+    body.bg-cyber { background: linear-gradient(135deg, #3b0d2c 0%, #110614 100%); }
+    body.bg-gold { background: linear-gradient(135deg, #3a2a0b 0%, #120e04 100%); }
+
+    .app-container {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      max-width: 940px;
+      background: var(--app-bg);
+      border: 1.5px solid var(--border);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+
+    @media (min-width: 900px) and (min-height: 600px) {
+      .app-container {
+        height: 91vh;
+        max-height: 640px;
+        border-radius: 28px;
+      }
+    }
+
+    /* Shop Frames */
+    .app-container.frame-gold { border: 2px solid #f59e0b; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.16), var(--shadow); }
+    .app-container.frame-neon { border: 2px solid var(--accent); box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.16), var(--shadow); }
+    .app-container.frame-ruby { border: 2px solid var(--accent-red); box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.16), var(--shadow); }
+    .app-container.frame-emerald { border: 2px solid var(--accent-green); box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.16), var(--shadow); }
+    .app-container.frame-rainbow { border: 2.5px solid var(--accent-purple); box-shadow: 0 0 0 4px rgba(175, 82, 222, 0.18), var(--shadow); }
+    .app-container.frame-void { border: 2px solid #5856d6; box-shadow: 0 0 0 5px rgba(88, 86, 214, 0.2), var(--shadow); }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      padding: 18px 20px;
+      background: var(--app-bg);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .screen.active {
+      display: flex;
+      animation: screenIn 0.32s var(--spring);
+    }
+
+    @keyframes screenIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      width: 100%;
+      flex-shrink: 0;
+      gap: 8px;
+    }
+
+    .top-left { display: flex; align-items: center; gap: 6px; }
+
+    .logo-area { display: flex; align-items: center; gap: 9px; }
+
+    .brand-badge {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent), #005bb5);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 113, 227, 0.28);
+      flex-shrink: 0;
+    }
+
+    .logo-area h1 { font-size: 1.18rem; font-weight: 800; color: var(--text-main); }
+
+    .user-panel { display: flex; align-items: center; gap: 6px; }
+
+    .user-info-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      padding: 4px 8px 4px 12px;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+      font-size: 0.78rem;
+    }
+
+    #logged-user-display { color: var(--text-main); font-weight: 600; }
+    #coins-display { color: var(--accent-orange); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+    .icon-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease, transform 0.18s var(--spring);
+      flex-shrink: 0;
+    }
+    .icon-btn:hover { background: var(--surface-hover); }
+    .icon-btn:active { transform: scale(0.9); }
+
+    .action-btn {
+      padding: 7px 14px;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.78rem;
+      transition: transform 0.18s var(--spring), opacity 0.2s ease;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .action-btn:active { transform: scale(0.95); }
+
+    .shop-btn { background: var(--accent); color: #ffffff; }
+    .login-btn { background: var(--accent); color: #ffffff; }
+
+    .logout-btn {
+      width: 26px;
+      height: 26px;
+      background: rgba(255, 59, 48, 0.12);
+      border-color: transparent;
+      color: var(--accent-red);
+    }
+    .logout-btn:hover { background: rgba(255, 59, 48, 0.22); }
+
+    /* Menu */
+    .menu-content {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      min-height: 0;
+      justify-content: space-between;
+    }
+
+    .quick-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .metric-tile {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .metric-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .metric-val { font-size: 1.05rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .metric-lbl { font-size: 0.68rem; color: var(--text-sub); font-weight: 500; margin-top: 2px; }
+
+    .history-box {
+      flex: 1;
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .history-header h3 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .clear-history-btn {
+      background: none;
+      border: none;
+      color: var(--text-sub);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .clear-history-btn:hover { background: var(--surface-hover); color: var(--accent-red); }
+
+    .history-row {
+      font-size: 0.83rem;
+      color: var(--text-main);
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.15s ease;
+      border-radius: 10px;
+    }
+    .history-row:hover { background: var(--surface-hover); }
+    .history-row:last-child { border-bottom: none; }
+
+    .menu-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .menu-btn {
+      padding: 14px 18px;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s var(--spring), box-shadow 0.2s ease, background-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .menu-btn:hover { transform: translateY(-1px); }
+    .menu-btn:active { transform: scale(0.96); }
+
+    .primary-btn {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(0, 113, 227, 0.26);
+    }
+    .primary-btn:hover { box-shadow: 0 6px 20px rgba(0, 113, 227, 0.34); }
+
+    .secondary-btn { background: var(--surface); color: var(--text-main); }
+    .secondary-btn:hover { background: var(--surface-hover); }
+
+    .equipped-btn {
+      background: var(--accent-green) !important;
+      color: #ffffff !important;
+      border-color: transparent !important;
+    }
+
+    /* Setup Forms */
+    .centered-setup-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      width: 100%;
+      padding: 6px 0;
+    }
+
+    .centered-setup-container h2 { font-size: 1.35rem; font-weight: 700; margin-bottom: 14px; }
+
+    .setup-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .setup-form label { font-size: 0.78rem; font-weight: 600; color: var(--text-sub); text-align: left; margin-top: 4px; }
+
+    .custom-input {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      width: 100%;
+      text-align: center;
+      font-family: inherit;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .custom-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--focus-ring); }
+
+    .setup-actions { display: flex; gap: 10px; margin-top: 16px; width: 100%; max-width: 400px; }
+    .setup-actions button { flex: 1; }
+
+    #players-names-grid { display: flex; flex-direction: column; gap: 6px; max-height: 110px; overflow-y: auto; width: 100%; }
+
+    /* Game Arena */
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      gap: 8px;
+    }
+
+    .status-pill {
+      padding: 5px 14px;
+      border-radius: 9999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .game-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; min-height: 0; }
+    .game-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; flex: 1; min-height: 0; }
+    .game-grid-4 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; flex: 1; min-height: 0; }
+
+    .player-box {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      user-select: none;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.14s var(--spring), border-color 0.2s ease, background-color 0.2s ease;
+    }
+    .player-box:active { transform: scale(0.975); }
+    .player-box.p-color-1 { border-top: 4px solid #0071e3; }
+    .player-box.p-color-2 { border-top: 4px solid #34c759; }
+    .player-box.p-color-3 { border-top: 4px solid #ff9f0a; }
+    .player-box.p-color-4 { border-top: 4px solid #af52de; }
+
+    .player-box .p-info {
+      position: absolute;
+      top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 84%;
+      font-size: 0.88rem;
+    }
+    .player-box .score {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--accent);
+      transition: transform 0.25s var(--spring);
+    }
+    .score-pop { animation: scorePop 0.35s var(--spring); }
+    @keyframes scorePop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.45); }
+      100% { transform: scale(1); }
+    }
+
+    .target-key {
+      font-family: "Plus Jakarta Sans", -apple-system, sans-serif;
+      font-size: 5.5rem;
+      font-weight: 800;
+      color: var(--text-sub);
+      opacity: 0.22;
+      transition: transform 0.18s var(--spring), color 0.15s ease, opacity 0.15s ease;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .target-key.show-key { opacity: 1; color: var(--accent); transform: scale(1.04); }
+    body.font-neon .target-key.show-key { color: var(--accent-green) !important; }
+    body.font-gold .target-key.show-key { color: #f59e0b !important; }
+    body.font-pink .target-key.show-key { color: #ec4899 !important; }
+
+    .target-key.winner-glow {
+      opacity: 1;
+      color: var(--accent-green) !important;
+      transform: scale(1.16);
+    }
+
+    /* Solo Arena */
+    .solo-progress-wrap {
+      width: 100%;
+      height: 4px;
+      background: var(--surface);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+    .solo-progress-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--accent);
+      border-radius: 9999px;
+      transition: width 0.9s linear, background-color 0.3s ease;
+    }
+
+    .solo-target-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border-radius: 22px;
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #solo-target { font-size: 6.5rem; line-height: 1; }
+
+    .target-circle {
+      position: absolute;
+      width: 86px;
+      height: 86px;
+      background: radial-gradient(circle at 35% 30%, #4da3ff 0%, var(--accent) 70%);
+      border: 3.5px solid #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 8px 24px rgba(0, 113, 227, 0.35);
+      cursor: pointer;
+      animation: springPop 0.22s var(--spring);
+    }
+
+    @keyframes springPop {
+      0% { transform: scale(0.35); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .tap-ripple {
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2.5px solid var(--accent-green);
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0.4);
+      opacity: 0.9;
+      animation: rippleOut 0.45s ease-out forwards;
+    }
+    @keyframes rippleOut {
+      to { transform: translate(-50%, -50%) scale(2.1); opacity: 0; }
+    }
+
+    .penalty-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 59, 48, 0.94);
+      backdrop-filter: blur(6px);
+      border-radius: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      z-index: 20;
+      text-align: center;
+      padding: 16px;
+      animation: screenIn 0.2s ease;
+    }
+
+    /* Shop */
+    .shop-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .shop-header h2 { font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .shop-container { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: 12px; }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      overflow-y: auto;
+      padding-right: 4px;
+      flex: 1;
+    }
+
+    .shop-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 13px;
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+      transition: transform 0.2s var(--spring);
+    }
+    .shop-item:hover { transform: translateY(-2px); }
+
+    .shop-item-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .shop-icon-badge {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+    .shop-item-info h4 { font-size: 0.88rem; color: var(--text-main); }
+    .shop-item-info p { font-size: 0.74rem; color: var(--text-sub); line-height: 1.35; }
+
+    .stats-box {
+      background: var(--surface);
+      padding: 18px;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border: 1px solid var(--border);
+      width: 100%;
+      max-width: 390px;
+      margin: 0 auto;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+    .stat-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-line:last-child { border-bottom: none; padding-bottom: 0; }
+
+    /* Modals */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.42);
+      backdrop-filter: saturate(180%) blur(10px);
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background: var(--app-bg);
+      padding: 22px;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 360px;
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.26);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+      animation: springPop 0.25s var(--spring);
+    }
+
+    .modal-box h3 { font-size: 1.08rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 7px; }
+    .modal-actions { display: flex; gap: 8px; margin-top: 4px; }
+    .modal-actions button { flex: 1; }
+
+    /* Toast */
+    .game-notification {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--text-main);
+      color: var(--app-bg);
+      padding: 9px 18px;
+      border-radius: 9999px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
+      z-index: 200;
+      opacity: 0;
+      transition: transform 0.28s var(--spring), opacity 0.25s ease;
+      pointer-events: none;
+    }
+    .game-notification.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .notification-content { display: flex; align-items: center; gap: 7px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
+
+    /* Confetti */
+    .confetti-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 150; }
+    .confetti-bit {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 2px;
+      animation: confettiFall 2.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(650px) rotate(540deg); opacity: 0; }
+    }
+
+    @media (max-width: 540px) {
+      .quick-metrics { grid-template-columns: 1fr 1fr; }
+      .quick-metrics .metric-tile:last-child { grid-column: span 2; }
+      .menu-buttons, .shop-grid { grid-template-columns: 1fr; }
+      .user-info-bar { padding: 3px 6px 3px 10px; gap: 5px; font-size: 0.72rem; }
+      .logo-area h1 { font-size: 1rem; }
+      .target-key { font-size: 3.5rem; }
+    }
+
+    body.is-landscape-mobile .screen { padding: 8px 12px !important; }
+    body.is-landscape-mobile .top-bar { margin-bottom: 6px !important; }
+    body.is-landscape-mobile .quick-metrics { display: none !important; }
+    body.is-landscape-mobile .target-key { font-size: 3.1rem !important; }
+    body.is-landscape-mobile #solo-target { font-size: 3.6rem !important; }
+    body.is-landscape-mobile .target-circle { width: 68px !important; height: 68px !important; }
+  </style>
 </head>
 <body>
 
-    <div id="app-container" class="app-container">
-        
-        <div id="screen-menu" class="screen active">
-            <div class="top-bar">
-                <button id="rules-open-btn" class="icon-btn"><i class="fa-solid fa-question"></i></button>
-                <div class="logo-area">
-                    <i class="fa-solid fa-bolt" style="color: #fbbf24;"></i>
-                    <h1>SPEED TAP</h1>
-                </div>
-                <div class="user-panel">
-                    <div id="user-info-bar" class="user-info-bar" style="display: none;">
-                        <span id="logged-user-display"></span>
-                        <span id="coins-display"></span>
-                        <button id="shop-open-btn" class="action-btn shop-btn"><i class="fa-solid fa-store"></i> Obchod</button>
-                        <button id="logout-btn" class="icon-btn logout-btn" title="Odhlásit se"><i class="fa-solid fa-right-from-bracket"></i></button>
-                    </div>
-                    <button id="login-open-btn" class="action-btn login-btn"><i class="fa-solid fa-user"></i> Přihlásit / Registrovat</button>
-                </div>
-            </div>
+  <div id="app-container" class="app-container">
+    <div id="confetti-layer" class="confetti-layer"></div>
 
-            <div class="menu-content">
-                <div class="history-box">
-                    <h3><i class="fa-solid fa-trophy" style="color: #fbbf24;"></i> Síň slávy / Historie</h3>
-                    <div id="game-list">
-                        <p style="color: #64748b; font-size: 0.85rem; text-align: center; padding: 10px;">Zatím žádné odehrané souboje.</p>
-                    </div>
-                </div>
-
-                <div class="menu-buttons">
-                    <button id="solo-mode-btn" class="menu-btn secondary-btn">
-                        <i class="fa-solid fa-user-ninja"></i> TRÉNINK (1 HRÁČ)
-                    </button>
-                    <button id="new-game-btn" class="menu-btn primary-btn">
-                        <i class="fa-solid fa-gamepad"></i> NOVÝ SOUBOJ (2-4 HRÁČI)
-                    </button>
-                </div>
-            </div>
+    <div id="screen-menu" class="screen active">
+      <div class="top-bar">
+        <div class="top-left">
+          <button type="button" id="rules-open-btn" class="icon-btn" title="Pravidla" aria-label="Pravidla">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          </button>
+          <button type="button" id="sound-toggle-btn" class="icon-btn" title="Zvuk" aria-label="Zapnout nebo ztlumit zvuk"></button>
+          <button type="button" id="theme-toggle-btn" class="icon-btn" title="Přepnout motiv" aria-label="Přepnout světlý a tmavý režim"></button>
         </div>
 
-        <div id="screen-setup" class="screen">
-            <div class="centered-setup-container">
-                <h2 style="margin-bottom: 12px;">Nastavení souboje</h2>
-                <div class="setup-form">
-                    <label>Počet hráčů:</label>
-                    <select id="players-count" class="custom-input">
-                        <option value="2">2 hráči</option>
-                        <option value="3">3 hráči</option>
-                        <option value="4">4 hráči</option>
-                    </select>
-
-                    <div id="players-names-grid">
-                        <input type="text" id="p1-name" placeholder="Hráč 1" maxlength="12" class="custom-input">
-                        <input type="text" id="p2-name" placeholder="Hráč 2" maxlength="12" class="custom-input">
-                    </div>
-
-                    <label>Režim ovládání:</label>
-                    <select id="control-mode" class="custom-input">
-                        <option value="tap">Čistý Tap (Kdo dřív klikne)</option>
-                        <option value="keys">Klávesy (Reakce na znaky)</option>
-                    </select>
-
-                    <div id="difficulty-box" style="display: none; flex-direction: column; gap: 4px;">
-                        <label>Obtížnost znaků:</label>
-                        <select id="difficulty-level" class="custom-input">
-                            <option value="1">Lehká (ASDFJKL)</option>
-                            <option value="2">Střední (Celá abeceda)</option>
-                            <option value="3">Těžká (Abeceda + čísla)</option>
-                            <option value="4">Extrém (Speciální znaky)</option>
-                            <option value="5">Šílenost (Vše dohromady)</option>
-                        </select>
-                    </div>
-
-                    <label>Počet bodů do výhry:</label>
-                    <select id="rounds-count" class="custom-input">
-                        <option value="5">5 bodů</option>
-                        <option value="10" selected>10 bodů</option>
-                        <option value="15">15 bodů</option>
-                    </select>
-                </div>
-                <div class="setup-actions">
-                    <button id="setup-back-btn" class="menu-btn secondary-btn">Zpět</button>
-                    <button id="setup-start-btn" class="menu-btn primary-btn">Spustit hru</button>
-                </div>
-            </div>
+        <div class="logo-area">
+          <span class="brand-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </span>
+          <h1>SpeedTap</h1>
         </div>
 
-        <div id="screen-solo-setup" class="screen">
-            <div class="centered-setup-container">
-                <h2 style="margin-bottom: 12px;">Nastavení tréninku</h2>
-                <div class="setup-form">
-                    <label>Tvoje jméno:</label>
-                    <input type="text" id="solo-name" placeholder="Trénující" maxlength="12" class="custom-input">
+        <div class="user-panel">
+          <div id="user-info-bar" class="user-info-bar" style="display: none;">
+            <span id="logged-user-display"></span>
+            <span id="coins-display" class="mono"></span>
+            <button type="button" id="shop-open-btn" class="action-btn shop-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              <span>Obchod</span>
+            </button>
+            <button type="button" id="logout-btn" class="icon-btn logout-btn" title="Odhlásit se" aria-label="Odhlásit se">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+            </button>
+          </div>
+          <button type="button" id="login-open-btn" class="action-btn login-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Přihlásit</span>
+          </button>
+        </div>
+      </div>
 
-                    <label>Styl tréninku:</label>
-                    <select id="solo-mode-type" class="custom-input">
-                        <option value="tap">Rychlostní Tap (Narážej na kolečka)</option>
-                        <option value="keys">Psaní znaků na čas (30 sekund)</option>
-                    </select>
-
-                    <div id="solo-diff-box" style="display: none; flex-direction: column; gap: 4px;">
-                        <label>Obtížnost znaků:</label>
-                        <select id="solo-diff-level" class="custom-input">
-                            <option value="1">Lehká (ASDFJKL)</option>
-                            <option value="2">Střední (Celá abeceda)</option>
-                            <option value="3">Těžká (Abeceda + čísla)</option>
-                            <option value="4">Extrém (Speciální znaky)</option>
-                            <option value="5">Šílenost (Vše dohromady)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="setup-actions">
-                    <button id="solo-back-btn" class="menu-btn secondary-btn">Zpět</button>
-                    <button id="solo-start-btn" class="menu-btn primary-btn">Začít trénovat</button>
-                </div>
+      <div class="menu-content">
+        <div class="quick-metrics">
+          <div class="metric-tile">
+            <span class="metric-icon" style="background:var(--accent-soft);color:var(--accent);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M10 2h4"/></svg>
+            </span>
+            <div>
+              <div class="metric-val mono" id="metric-best-rt">—</div>
+              <div class="metric-lbl">Nejlepší reakce</div>
             </div>
+          </div>
+          <div class="metric-tile">
+            <span class="metric-icon" style="background:rgba(52,199,89,0.12);color:var(--accent-green);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            </span>
+            <div>
+              <div class="metric-val mono" id="metric-games-count">0</div>
+              <div class="metric-lbl">Odehráno her</div>
+            </div>
+          </div>
+          <div class="metric-tile">
+            <span class="metric-icon" style="background:rgba(255,159,10,0.14);color:var(--accent-orange);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </span>
+            <div>
+              <div class="metric-val mono" id="metric-best-solo">0</div>
+              <div class="metric-lbl">Rekord tréninku</div>
+            </div>
+          </div>
         </div>
 
-        <div id="screen-game" class="screen">
-            <div class="game-header">
-                <span id="status-msg">PŘIPRAV SE...</span>
-                <button id="quit-game-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="game-grid-container" class="game-grid-2"></div>
+        <div class="history-box">
+          <div class="history-header">
+            <h3>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+              <span>Síň slávy / Historie</span>
+            </h3>
+            <button type="button" id="clear-history-btn" class="clear-history-btn">Smazat historii</button>
+          </div>
+          <div id="game-list">
+            <p style="color: var(--text-sub); font-size: 0.85rem; text-align: center; padding: 14px;">Zatím žádné odehrané souboje.</p>
+          </div>
         </div>
 
-        <div id="screen-solo-game" class="screen">
-            <div class="game-header">
-                <div>
-                    <span id="solo-display-name" style="font-weight: bold; color: #38bdf8;">Hráč</span> | 
-                    <span id="solo-score" style="color: #fbbf24; font-weight: bold;">0</span> tref
-                </div>
-                <div id="solo-timer"><i class="fa-regular fa-clock"></i> Čas: 30s</div>
-                <button id="quit-solo-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="solo-target-container" id="solo-target-box">
-                <div id="solo-target" class="target-key">TAP</div>
-                <div id="penalty-overlay" class="penalty-overlay" style="display: none;">
-                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.5rem; margin-bottom: 5px;"></i>
-                    <span>NETREFIL SE / ŠPATNÁ KLÁVESA!</span>
-                    <span id="penalty-timer" style="font-size: 2rem; margin-top: 5px;">3</span>
-                </div>
-            </div>
+        <div class="menu-buttons">
+          <button type="button" id="solo-mode-btn" class="menu-btn secondary-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Trénink (1 hráč)</span>
+          </button>
+          <button type="button" id="new-game-btn" class="menu-btn primary-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>
+            <span>Nový souboj (2–4 hráči)</span>
+          </button>
         </div>
+      </div>
+    </div>
 
-        <div id="screen-shop" class="screen">
-            <h2><i class="fa-solid fa-store" style="color: #38bdf8;"></i> Obchod se skiny a doplňky</h2>
-            <div class="shop-container" style="margin-top: 10px;">
-                <div id="shop-items-grid" class="shop-grid"></div>
-                <div class="setup-actions" style="max-width: 100%;">
-                    <button id="shop-back-btn" class="menu-btn secondary-btn">Zpět do menu</button>
-                </div>
-            </div>
+    <div id="screen-setup" class="screen">
+      <div class="centered-setup-container">
+        <h2>Nastavení souboje</h2>
+        <div class="setup-form">
+          <label>Počet hráčů:</label>
+          <select id="players-count" class="custom-input">
+            <option value="2">2 hráči</option>
+            <option value="3">3 hráči</option>
+            <option value="4">4 hráči</option>
+          </select>
+
+          <div id="players-names-grid">
+            <input type="text" id="p1-name" placeholder="Hráč 1" maxlength="12" class="custom-input">
+            <input type="text" id="p2-name" placeholder="Hráč 2" maxlength="12" class="custom-input">
+          </div>
+
+          <label>Režim ovládání:</label>
+          <select id="control-mode" class="custom-input">
+            <option value="tap">Čistý Tap (Kdo dřív klikne)</option>
+            <option value="keys">Klávesy (Reakce na znaky)</option>
+          </select>
+
+          <div id="difficulty-box" style="display: none; flex-direction: column; gap: 4px;">
+            <label>Obtížnost znaků:</label>
+            <select id="difficulty-level" class="custom-input">
+              <option value="1">Lehká (ASDFJKL)</option>
+              <option value="2">Střední (Celá abeceda)</option>
+              <option value="3">Těžká (Abeceda + čísla)</option>
+              <option value="4">Extrém (Speciální znaky)</option>
+              <option value="5">Šílenost (Vše dohromady)</option>
+            </select>
+          </div>
+
+          <label>Počet bodů do výhry:</label>
+          <select id="rounds-count" class="custom-input">
+            <option value="5">5 bodů</option>
+            <option value="10" selected>10 bodů</option>
+            <option value="15">15 bodů</option>
+          </select>
         </div>
-
-        <div id="screen-stats" class="screen">
-            <div class="centered-setup-container">
-                <h2 style="margin-bottom: 10px;">Konec hry!</h2>
-                <div id="stats-content" class="stats-box"></div>
-                <div class="setup-actions">
-                    <button id="stats-back-btn" class="menu-btn primary-btn">Zpět do menu</button>
-                </div>
-            </div>
+        <div class="setup-actions">
+          <button type="button" id="setup-back-btn" class="menu-btn secondary-btn">Zpět</button>
+          <button type="button" id="setup-start-btn" class="menu-btn primary-btn">Spustit hru</button>
         </div>
+      </div>
+    </div>
 
+    <div id="screen-solo-setup" class="screen">
+      <div class="centered-setup-container">
+        <h2>Nastavení tréninku</h2>
+        <div class="setup-form">
+          <label>Tvoje jméno:</label>
+          <input type="text" id="solo-name" placeholder="Trénující" maxlength="12" class="custom-input">
+
+          <label>Styl tréninku:</label>
+          <select id="solo-mode-type" class="custom-input">
+            <option value="tap">Rychlostní Tap (Narážej na kolečka)</option>
+            <option value="keys">Psaní znaků na čas (30 sekund)</option>
+          </select>
+
+          <div id="solo-diff-box" style="display: none; flex-direction: column; gap: 4px;">
+            <label>Obtížnost znaků:</label>
+            <select id="solo-diff-level" class="custom-input">
+              <option value="1">Lehká (ASDFJKL)</option>
+              <option value="2">Střední (Celá abeceda)</option>
+              <option value="3">Těžká (Abeceda + čísla)</option>
+              <option value="4">Extrém (Speciální znaky)</option>
+              <option value="5">Šílenost (Vše dohromady)</option>
+            </select>
+          </div>
+        </div>
+        <div class="setup-actions">
+          <button type="button" id="solo-back-btn" class="menu-btn secondary-btn">Zpět</button>
+          <button type="button" id="solo-start-btn" class="menu-btn primary-btn">Začít trénovat</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-game" class="screen">
+      <div class="game-header">
+        <span id="status-msg" class="status-pill">PŘIPRAV SE...</span>
+        <button type="button" id="quit-game-btn" class="icon-btn" aria-label="Ukončit hru">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div id="game-grid-container" class="game-grid-2"></div>
+    </div>
+
+    <div id="screen-solo-game" class="screen">
+      <div class="game-header">
+        <div>
+          <span id="solo-display-name" style="color: var(--accent);">Hráč</span> ·
+          <span id="solo-score" class="mono" style="color: var(--accent-orange);">0</span> tref
+        </div>
+        <div id="solo-timer" class="mono status-pill">30s</div>
+        <button type="button" id="quit-solo-btn" class="icon-btn" aria-label="Ukončit trénink">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="solo-progress-wrap"><div id="solo-progress-fill" class="solo-progress-fill"></div></div>
+      <div class="solo-target-container" id="solo-target-box">
+        <div id="solo-target" class="target-key">TAP</div>
+        <div id="penalty-overlay" class="penalty-overlay" style="display: none;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          <span>NETREFIL SE / ŠPATNÁ KLÁVESA</span>
+          <span id="penalty-timer" class="mono" style="font-size: 2.2rem; margin-top: 6px;">3</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-shop" class="screen">
+      <div class="shop-header">
+        <h2>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span>Obchod se skiny a doplňky</span>
+        </h2>
+        <button type="button" id="shop-back-btn" class="menu-btn secondary-btn" style="padding: 7px 14px; font-size: 0.8rem;">Zpět</button>
+      </div>
+      <div class="shop-container">
+        <div id="shop-items-grid" class="shop-grid"></div>
+      </div>
+    </div>
+
+    <div id="screen-stats" class="screen">
+      <div class="centered-setup-container">
+        <h2>Konec hry</h2>
+        <div id="stats-content" class="stats-box"></div>
+        <div class="setup-actions">
+          <button type="button" id="stats-back-btn" class="menu-btn primary-btn">Zpět do menu</button>
+        </div>
+      </div>
     </div>
 
     <div id="modal-login" class="modal-overlay" style="display: none;">
-        <div class="modal-box">
-            <h3><i class="fa-solid fa-user-ninja"></i> Uživatelský profil</h3>
-            <p style="font-size: 0.8rem; color: #94a3b8;">Zadej své jméno pro ukládání coinů a zakoupených předmětů.</p>
-            <input type="text" id="auth-username-input" placeholder="Tvoje přezdívka" maxlength="12" class="custom-input">
-            <div class="modal-actions">
-                <button id="login-cancel-btn" class="menu-btn secondary-btn">Zrušit</button>
-                <button id="auth-submit-btn" class="menu-btn primary-btn">Uložit</button>
-            </div>
+      <div class="modal-box">
+        <h3>Uživatelský profil</h3>
+        <p style="font-size: 0.82rem; color: var(--text-sub);">Zadej své jméno pro ukládání coinů a zakoupených předmětů.</p>
+        <input type="text" id="auth-username-input" placeholder="Tvoje přezdívka" maxlength="12" class="custom-input">
+        <div class="modal-actions">
+          <button type="button" id="login-cancel-btn" class="menu-btn secondary-btn">Zrušit</button>
+          <button type="button" id="auth-submit-btn" class="menu-btn primary-btn">Uložit</button>
         </div>
+      </div>
     </div>
 
     <div id="modal-rules" class="modal-overlay" style="display: none;">
-        <div class="modal-box">
-            <h3>Pravidla hry</h3>
-            <p style="font-size: 0.85rem; color: #94a3b8; line-height: 1.3;">
-                <strong>Režim Tap:</strong> Klikni co nejrychleji na kolečko.<br><br>
-                <strong>Režim Klávesy:</strong> Stiskni správnou klávesu podle znaku.<br><br>
-                <strong>Trénink:</strong> Minutí kolečka nebo špatná klávesa vyvolá 3s penalizaci!
-            </p>
-            <button id="rules-close-btn" class="menu-btn primary-btn">Rozumím</button>
-        </div>
+      <div class="modal-box">
+        <h3>Pravidla hry</h3>
+        <p style="font-size: 0.84rem; color: var(--text-sub); line-height: 1.45; text-align: left;">
+          <strong>Režim Tap:</strong> Klikni co nejrychleji na svůj panel nebo kolečko.<br><br>
+          <strong>Režim Klávesy:</strong> Stiskni správnou klávesu podle zobrazeného znaku.<br><br>
+          <strong>Trénink:</strong> Minutí kolečka nebo špatná klávesa vyvolá 3s penalizaci.
+        </p>
+        <button type="button" id="rules-close-btn" class="menu-btn primary-btn">Rozumím</button>
+      </div>
     </div>
 
     <div id="game-notification" class="game-notification">
-        <div class="notification-content">
-            <i id="notif-icon" class="fa-solid fa-circle-check"></i>
-            <span id="notif-text">Zpráva</span>
-        </div>
+      <div class="notification-content">
+        <span id="notif-text">Zpráva</span>
+      </div>
     </div>
 
-    <script src="script.js"></script>
+  </div>
+
+  <script>
+    let games = [];
+    let localUser = null;
+    try {
+      games = JSON.parse(localStorage.getItem('speedTapGames')) || [];
+      localUser = JSON.parse(localStorage.getItem('speedTapUser')) || null;
+    } catch (e) {}
+
+    let activeGame = null;
+    let gameState = 'waiting';
+    let timeoutId = null;
+    let penaltyInterval = null;
+    let currentTheme = 'light';
+    let soundEnabled = true;
+
+    try {
+      const st = localStorage.getItem('speedTapTheme');
+      if (st === 'dark' || st === 'light') currentTheme = st;
+      const se = localStorage.getItem('speedTapSound');
+      if (se === 'false') soundEnabled = false;
+    } catch (e) {}
+
+    let userData = localUser ? localUser : {
+      username: '',
+      coins: 100,
+      ownedItems: [],
+      equippedFrame: null,
+      equippedBg: null,
+      equippedFont: null,
+      activeBoost: 1
+    };
+
+    const svgIcons = {
+      frame: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="4"/></svg>',
+      font: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/></svg>',
+      bg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>',
+      boost: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>'
+    };
+
+    const shopCatalog = [
+      { id: 'frame-gold', name: 'Zlatý rámec', desc: 'Zlaté ohraničení celé aplikace', type: 'frame', price: 150, color: '#f59e0b' },
+      { id: 'frame-neon', name: 'Modrý rámec', desc: 'Čistý modrý Apple akcent', type: 'frame', price: 100, color: '#0071e3' },
+      { id: 'frame-ruby', name: 'Rubínový rámec', desc: 'Červené zvýraznění okrajů', type: 'frame', price: 200, color: '#ff3b30' },
+      { id: 'frame-emerald', name: 'Smaragdový rámec', desc: 'Zelené zvýraznění okrajů', type: 'frame', price: 180, color: '#34c759' },
+      { id: 'frame-rainbow', name: 'Fialový rámec', desc: 'Prestižní fialové ohraničení', type: 'frame', price: 600, color: '#af52de' },
+      { id: 'frame-void', name: 'Indigo rámec', desc: 'Hluboký indigový akcent', type: 'frame', price: 850, color: '#5856d6' },
+
+      { id: 'font-neon', name: 'Zelené písmo', desc: 'Znaky v jasně zeleném odstínu', type: 'font', price: 120, color: '#34c759' },
+      { id: 'font-gold', name: 'Zlaté písmo', desc: 'Zlatý odstín herních znaků', type: 'font', price: 200, color: '#f59e0b' },
+      { id: 'font-pink', name: 'Růžové písmo', desc: 'Výrazný růžový odstín znaků', type: 'font', price: 250, color: '#ec4899' },
+
+      { id: 'bg-space', name: 'Temný vesmír', desc: 'Hluboké fialové pozadí okna', type: 'bg', price: 250, color: '#5856d6' },
+      { id: 'bg-fire', name: 'Teplý jantar', desc: 'Tmavé jantarové pozadí', type: 'bg', price: 250, color: '#f97316' },
+      { id: 'bg-cyber', name: 'Purpurová noc', desc: 'Temně purpurové pozadí', type: 'bg', price: 300, color: '#ec4899' },
+      { id: 'bg-gold', name: 'Královská zlatá', desc: 'Tmavý zlato-hnědý odstín', type: 'bg', price: 400, color: '#f59e0b' },
+
+      { id: 'boost-2x', name: '2x Coin Boost', desc: 'Zdvojnásobí coiny z příští hry', type: 'boost', multiplier: 2, price: 80, color: '#34c759' },
+      { id: 'boost-3x', name: '3x MEGA Boost', desc: 'Ztrojnásobí coiny z příští hry', type: 'boost', multiplier: 3, price: 180, color: '#ff3b30' }
+    ];
+
+    const diffKeys = {
+      1: 'ASDFJKL',
+      2: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      3: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+      4: '!?@#$%&*+-=',
+      5: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!?@#$%&*+-=0123456789'
+    };
+
+    const moonSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+    const sunSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+    const soundOnSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>';
+    const soundOffSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>';
+
+    let audioCtx = null;
+    function beep(freq, dur, type = 'sine', vol = 0.1) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        g.gain.setValueAtTime(vol, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+        osc.connect(g);
+        g.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + dur);
+      } catch (e) {}
+    }
+
+    function saveUser() {
+      try { localStorage.setItem('speedTapUser', JSON.stringify(userData)); } catch (e) {}
+    }
+
+    function applyTheme(theme) {
+      currentTheme = theme;
+      document.documentElement.setAttribute('data-theme', theme);
+      const btn = document.getElementById('theme-toggle-btn');
+      if (btn) btn.innerHTML = theme === 'dark' ? sunSvg : moonSvg;
+      try { localStorage.setItem('speedTapTheme', theme); } catch (e) {}
+    }
+
+    function applySoundUI() {
+      const btn = document.getElementById('sound-toggle-btn');
+      if (btn) btn.innerHTML = soundEnabled ? soundOnSvg : soundOffSvg;
+      try { localStorage.setItem('speedTapSound', String(soundEnabled)); } catch (e) {}
+    }
+
+    function showNotification(text) {
+      const notif = document.getElementById('game-notification');
+      const notifText = document.getElementById('notif-text');
+      if (!notif || !notifText) return;
+      notifText.textContent = text;
+      notif.classList.add('show');
+      setTimeout(() => notif.classList.remove('show'), 2400);
+    }
+
+    function spawnRipple(container, x, y) {
+      const r = document.createElement('span');
+      r.className = 'tap-ripple';
+      r.style.left = x + 'px';
+      r.style.top = y + 'px';
+      container.appendChild(r);
+      setTimeout(() => r.remove(), 480);
+    }
+
+    function launchConfetti() {
+      const layer = document.getElementById('confetti-layer');
+      if (!layer) return;
+      layer.innerHTML = '';
+      const colors = ['#0071e3', '#34c759', '#ff9f0a', '#ff3b30', '#af52de'];
+      for (let i = 0; i < 32; i++) {
+        const bit = document.createElement('div');
+        bit.className = 'confetti-bit';
+        bit.style.left = (Math.random() * 100) + '%';
+        bit.style.top = '-10px';
+        bit.style.backgroundColor = colors[i % colors.length];
+        bit.style.animationDelay = (Math.random() * 0.4) + 's';
+        layer.appendChild(bit);
+      }
+      setTimeout(() => { layer.innerHTML = ''; }, 2600);
+    }
+
+    const screens = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      screens.menu = document.getElementById('screen-menu');
+      screens.setup = document.getElementById('screen-setup');
+      screens.soloSetup = document.getElementById('screen-solo-setup');
+      screens.game = document.getElementById('screen-game');
+      screens.soloGame = document.getElementById('screen-solo-game');
+      screens.shop = document.getElementById('screen-shop');
+      screens.stats = document.getElementById('screen-stats');
+
+      if (!userData.ownedItems) userData.ownedItems = [];
+      if (!userData.activeBoost) userData.activeBoost = 1;
+
+      applyTheme(currentTheme);
+      applySoundUI();
+      updateUIUser();
+      applyEquippedSkins();
+      renderGameHistory();
+      setupEventListeners();
+      autoResizeForLandscape();
+    });
+
+    function autoResizeForLandscape() {
+      const isLandscape = window.innerWidth > window.innerHeight;
+      if (isLandscape && window.innerHeight < 550) document.body.classList.add('is-landscape-mobile');
+      else document.body.classList.remove('is-landscape-mobile');
+    }
+
+    window.addEventListener('resize', autoResizeForLandscape);
+    window.addEventListener('orientationchange', () => setTimeout(autoResizeForLandscape, 100));
+
+    function showScreen(name) {
+      Object.values(screens).forEach(s => { if (s) s.classList.remove('active'); });
+      if (screens[name]) screens[name].classList.add('active');
+    }
+
+    function applyEquippedSkins() {
+      const appContainer = document.getElementById('app-container');
+      const body = document.body;
+      if (appContainer) {
+        appContainer.className = 'app-container';
+        if (userData.equippedFrame) appContainer.classList.add(userData.equippedFrame);
+      }
+      if (body) {
+        body.classList.remove('bg-space', 'bg-fire', 'bg-cyber', 'bg-gold', 'font-neon', 'font-gold', 'font-pink');
+        if (userData.equippedBg) body.classList.add(userData.equippedBg);
+        if (userData.equippedFont) body.classList.add(userData.equippedFont);
+      }
+    }
+
+    function updateUIUser() {
+      const infoBar = document.getElementById('user-info-bar');
+      const loginBtn = document.getElementById('login-open-btn');
+      if (!infoBar || !loginBtn) return;
+
+      if (userData.username) {
+        infoBar.style.display = 'flex';
+        loginBtn.style.display = 'none';
+        const userDisplay = document.getElementById('logged-user-display');
+        const coinsDisplay = document.getElementById('coins-display');
+        const boostText = userData.activeBoost > 1 ? ` (${userData.activeBoost}x)` : '';
+        if (userDisplay) userDisplay.textContent = userData.username;
+        if (coinsDisplay) coinsDisplay.textContent = `${userData.coins} C${boostText}`;
+      } else {
+        infoBar.style.display = 'none';
+        loginBtn.style.display = 'inline-flex';
+      }
+    }
+
+    function renderShop() {
+      const grid = document.getElementById('shop-items-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      shopCatalog.forEach(item => {
+        const isOwned = userData.ownedItems.includes(item.id);
+        const isEquipped =
+          (item.type === 'frame' && userData.equippedFrame === item.id) ||
+          (item.type === 'bg' && userData.equippedBg === item.id) ||
+          (item.type === 'font' && userData.equippedFont === item.id);
+
+        const card = document.createElement('div');
+        card.className = 'shop-item';
+
+        let btnText = `Koupit (${item.price} C)`;
+        let btnClass = 'action-btn primary-btn';
+
+        if (item.type === 'boost') {
+          btnText = `Aktivovat (${item.price} C)`;
+          if (userData.activeBoost === item.multiplier) {
+            btnText = 'Aktivní';
+            btnClass = 'action-btn equipped-btn';
+          }
+        } else if (isOwned) {
+          if (isEquipped) {
+            btnText = 'Použito';
+            btnClass = 'action-btn equipped-btn';
+          } else {
+            btnText = 'Použít';
+            btnClass = 'action-btn secondary-btn';
+          }
+        }
+
+        const iconSvg = svgIcons[item.type] || svgIcons.frame;
+        card.innerHTML = `
+          <div class="shop-item-info">
+            <div class="shop-item-head">
+              <span class="shop-icon-badge" style="background:${item.color};">${iconSvg}</span>
+              <h4>${item.name}</h4>
+            </div>
+            <p>${item.desc}</p>
+          </div>
+          <button type="button" class="${btnClass}" style="justify-content:center;" onclick="handleShopClick('${item.id}')">${btnText}</button>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    window.handleShopClick = function(itemId) {
+      const item = shopCatalog.find(i => i.id === itemId);
+      if (!item) return;
+
+      if (item.type === 'boost') {
+        if (userData.coins >= item.price) {
+          userData.coins -= item.price;
+          userData.activeBoost = item.multiplier;
+          saveUser();
+          updateUIUser();
+          renderShop();
+          showNotification(`Aktivován ${item.name}`);
+        } else {
+          showNotification('Nemáš dostatek coinů');
+        }
+        return;
+      }
+
+      const isOwned = userData.ownedItems.includes(itemId);
+      if (isOwned) {
+        if (item.type === 'frame') userData.equippedFrame = (userData.equippedFrame === itemId) ? null : itemId;
+        else if (item.type === 'bg') userData.equippedBg = (userData.equippedBg === itemId) ? null : itemId;
+        else if (item.type === 'font') userData.equippedFont = (userData.equippedFont === itemId) ? null : itemId;
+        saveUser();
+        applyEquippedSkins();
+        renderShop();
+        showNotification('Vzhled byl změněn');
+      } else {
+        if (userData.coins >= item.price) {
+          userData.coins -= item.price;
+          userData.ownedItems.push(itemId);
+          if (item.type === 'frame') userData.equippedFrame = itemId;
+          if (item.type === 'bg') userData.equippedBg = itemId;
+          if (item.type === 'font') userData.equippedFont = itemId;
+          saveUser();
+          updateUIUser();
+          applyEquippedSkins();
+          renderShop();
+          showNotification(`Zakoupeno: ${item.name}`);
+        } else {
+          showNotification('Nemáš dostatek coinů');
+        }
+      }
+    };
+
+    function updateMetrics() {
+      const gamesCountEl = document.getElementById('metric-games-count');
+      const bestRtEl = document.getElementById('metric-best-rt');
+      const bestSoloEl = document.getElementById('metric-best-solo');
+      if (gamesCountEl) gamesCountEl.textContent = games.length;
+
+      let bestRt = null;
+      let bestSolo = 0;
+      games.forEach(g => {
+        if (g.reactions && g.reactions.length) {
+          const minR = Math.min(...g.reactions);
+          if (bestRt === null || minR < bestRt) bestRt = minR;
+        }
+        if (g.type === 'solo' && g.score > bestSolo) bestSolo = g.score;
+      });
+      if (bestRtEl) bestRtEl.textContent = bestRt !== null ? `${bestRt} ms` : '—';
+      if (bestSoloEl) bestSoloEl.textContent = bestSolo;
+    }
+
+    function renderGameHistory() {
+      updateMetrics();
+      const listContainer = document.getElementById('game-list');
+      if (!listContainer) return;
+
+      if (games.length === 0) {
+        listContainer.innerHTML = `<p style="color: var(--text-sub); font-size: 0.85rem; text-align: center; padding: 14px;">Zatím žádné odehrané souboje.</p>`;
+        return;
+      }
+
+      listContainer.innerHTML = '';
+      games.slice(-6).reverse().forEach((g) => {
+        const item = document.createElement('div');
+        item.className = 'history-row';
+        if (g.type === 'solo') {
+          item.innerHTML = `<span>Trénink (${g.name})</span><span class="mono" style="color: var(--accent); font-weight:700;">${g.score} tref</span>`;
+        } else {
+          const winner = g.players.reduce((prev, cur) => (prev.score > cur.score ? prev : cur));
+          item.innerHTML = `<span>Souboj (${g.players.length} hráči)</span><span style="color: var(--accent-green); font-weight:700;">Vítěz: ${winner.name}</span>`;
+        }
+        listContainer.appendChild(item);
+      });
+    }
+
+    function safeClick(id, callback) {
+      const el = document.getElementById(id);
+      if (el) el.onclick = callback;
+    }
+
+    function setupEventListeners() {
+      safeClick('theme-toggle-btn', () => applyTheme(currentTheme === 'dark' ? 'light' : 'dark'));
+      safeClick('sound-toggle-btn', () => {
+        soundEnabled = !soundEnabled;
+        applySoundUI();
+        showNotification(soundEnabled ? 'Zvuky zapnuty' : 'Zvuky ztlumeny');
+      });
+
+      safeClick('clear-history-btn', () => {
+        games = [];
+        try { localStorage.removeItem('speedTapGames'); } catch (e) {}
+        renderGameHistory();
+        showNotification('Historie smazána');
+      });
+
+      const modalLogin = document.getElementById('modal-login');
+      const usernameInput = document.getElementById('auth-username-input');
+
+      safeClick('login-open-btn', () => {
+        if (usernameInput) usernameInput.value = userData.username || '';
+        if (modalLogin) modalLogin.style.display = 'flex';
+      });
+      safeClick('login-cancel-btn', () => { if (modalLogin) modalLogin.style.display = 'none'; });
+
+      safeClick('auth-submit-btn', () => {
+        if (!usernameInput) return;
+        const username = usernameInput.value.trim();
+        if (!username) {
+          showNotification('Zadej uživatelské jméno');
+          return;
+        }
+        userData.username = username;
+        saveUser();
+        if (modalLogin) modalLogin.style.display = 'none';
+        updateUIUser();
+        showNotification('Přihlášeno jako ' + username);
+      });
+
+      safeClick('logout-btn', () => {
+        userData.username = '';
+        userData.coins = 100;
+        userData.ownedItems = [];
+        userData.equippedFrame = null;
+        userData.equippedBg = null;
+        userData.equippedFont = null;
+        userData.activeBoost = 1;
+        try { localStorage.removeItem('speedTapUser'); } catch (e) {}
+        updateUIUser();
+        applyEquippedSkins();
+        showNotification('Odhlášeno');
+      });
+
+      safeClick('shop-open-btn', () => { renderShop(); showScreen('shop'); });
+      safeClick('shop-back-btn', () => showScreen('menu'));
+
+      const playersCountSelect = document.getElementById('players-count');
+      if (playersCountSelect) {
+        playersCountSelect.onchange = (e) => {
+          const count = parseInt(e.target.value);
+          const container = document.getElementById('players-names-grid');
+          if (!container) return;
+          container.innerHTML = '';
+          for (let i = 1; i <= count; i++) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = `p${i}-name`;
+            input.placeholder = `Hráč ${i}`;
+            input.maxLength = 12;
+            input.className = 'custom-input';
+            container.appendChild(input);
+          }
+        };
+      }
+
+      const controlModeSelect = document.getElementById('control-mode');
+      if (controlModeSelect) {
+        controlModeSelect.onchange = (e) => {
+          const diffBox = document.getElementById('difficulty-box');
+          if (diffBox) diffBox.style.display = e.target.value === 'keys' ? 'flex' : 'none';
+        };
+      }
+
+      safeClick('new-game-btn', () => showScreen('setup'));
+      safeClick('setup-back-btn', () => showScreen('menu'));
+
+      safeClick('setup-start-btn', () => {
+        const pCountSelect = document.getElementById('players-count');
+        const pCount = pCountSelect ? parseInt(pCountSelect.value) : 2;
+        const players = [];
+        for (let i = 1; i <= pCount; i++) {
+          const nameField = document.getElementById(`p${i}-name`);
+          const name = nameField && nameField.value.trim() ? nameField.value.trim() : `Hráč ${i}`;
+          players.push({ name, score: 0 });
+        }
+
+        const controlModeEl = document.getElementById('control-mode');
+        const diffLevelEl = document.getElementById('difficulty-level');
+        const roundsCountEl = document.getElementById('rounds-count');
+
+        activeGame = {
+          type: 'multi',
+          players,
+          mode: controlModeEl ? controlModeEl.value : 'tap',
+          diff: diffLevelEl ? parseInt(diffLevelEl.value) : 1,
+          maxRounds: roundsCountEl ? parseInt(roundsCountEl.value) : 10,
+          roundStartTime: 0,
+          reactions: [],
+          falseStarts: 0
+        };
+        startMultiGame();
+      });
+
+      safeClick('solo-mode-btn', () => {
+        const soloNameInput = document.getElementById('solo-name');
+        if (soloNameInput && userData.username) soloNameInput.value = userData.username;
+        showScreen('soloSetup');
+      });
+
+      safeClick('solo-back-btn', () => showScreen('menu'));
+
+      const soloModeTypeEl = document.getElementById('solo-mode-type');
+      if (soloModeTypeEl) {
+        soloModeTypeEl.onchange = (e) => {
+          const soloDiffBox = document.getElementById('solo-diff-box');
+          if (soloDiffBox) soloDiffBox.style.display = e.target.value === 'keys' ? 'flex' : 'none';
+        };
+      }
+
+      safeClick('solo-start-btn', () => {
+        const soloNameInput = document.getElementById('solo-name');
+        const soloDiffLevelEl = document.getElementById('solo-diff-level');
+        const name = soloNameInput && soloNameInput.value.trim() ? soloNameInput.value.trim() : (userData.username || 'Trénující');
+        activeGame = {
+          type: 'solo',
+          name,
+          mode: soloModeTypeEl ? soloModeTypeEl.value : 'tap',
+          diff: soloDiffLevelEl ? parseInt(soloDiffLevelEl.value) : 1,
+          score: 0,
+          errors: 0,
+          timeLeft: 30,
+          timerId: null,
+          reactions: [],
+          isPenalized: false
+        };
+        startSoloGame();
+      });
+
+      safeClick('stats-back-btn', () => showScreen('menu'));
+
+      window.onkeydown = (e) => {
+        if (screens.game && screens.game.classList.contains('active') && activeGame && activeGame.mode === 'keys') {
+          handleMultiInput(null, e.key);
+        } else if (screens.soloGame && screens.soloGame.classList.contains('active') && activeGame && activeGame.mode === 'keys') {
+          handleSoloInput(e.key);
+        }
+      };
+
+      const soloTargetBox = document.getElementById('solo-target-box');
+      if (soloTargetBox) {
+        soloTargetBox.onpointerdown = (e) => {
+          if (screens.soloGame && screens.soloGame.classList.contains('active') && activeGame && activeGame.mode === 'tap') {
+            if (e.target.classList.contains('target-circle')) {
+              const rect = soloTargetBox.getBoundingClientRect();
+              spawnRipple(soloTargetBox, e.clientX - rect.left, e.clientY - rect.top);
+              handleSoloInput(true);
+            } else if (!e.target.closest('#penalty-overlay')) {
+              triggerPenalty();
+            }
+          }
+        };
+      }
+
+      safeClick('quit-game-btn', () => { clearTimeout(timeoutId); showScreen('menu'); });
+      safeClick('quit-solo-btn', () => {
+        if (activeGame) clearInterval(activeGame.timerId);
+        if (penaltyInterval) clearInterval(penaltyInterval);
+        const overlay = document.getElementById('penalty-overlay');
+        if (overlay) overlay.style.display = 'none';
+        showScreen('menu');
+      });
+      safeClick('rules-open-btn', () => { const m = document.getElementById('modal-rules'); if (m) m.style.display = 'flex'; });
+      safeClick('rules-close-btn', () => { const m = document.getElementById('modal-rules'); if (m) m.style.display = 'none'; });
+    }
+
+    function startMultiGame() {
+      showScreen('game');
+      const container = document.getElementById('game-grid-container');
+      if (!container) return;
+      container.className = `game-grid-${activeGame.players.length}`;
+      container.innerHTML = '';
+
+      activeGame.players.forEach((p, idx) => {
+        const box = document.createElement('div');
+        box.className = `player-box p-color-${idx + 1}`;
+        box.id = `player-box-${idx + 1}`;
+        box.innerHTML = `
+          <div class="p-info">
+            <h4>${p.name}</h4>
+            <span id="score-${idx + 1}" class="score">0</span>
+          </div>
+          <div class="target-key" id="target-${idx + 1}">?</div>
+        `;
+        if (activeGame.mode === 'tap') {
+          box.onpointerdown = (e) => {
+            const rect = box.getBoundingClientRect();
+            spawnRipple(box, e.clientX - rect.left, e.clientY - rect.top);
+            if (gameState === 'go') handleMultiInput(idx + 1);
+            else if (gameState === 'waiting') handleFalseStart(idx + 1);
+          };
+        }
+        container.appendChild(box);
+      });
+      updateMultiScores();
+      nextMultiRound();
+    }
+
+    function updateMultiScores(winnerIdx = null) {
+      activeGame.players.forEach((p, idx) => {
+        const el = document.getElementById(`score-${idx + 1}`);
+        if (el) {
+          el.textContent = p.score;
+          if (winnerIdx === idx + 1) {
+            el.classList.remove('score-pop');
+            void el.offsetWidth;
+            el.classList.add('score-pop');
+          }
+        }
+      });
+    }
+
+    function nextMultiRound() {
+      gameState = 'waiting';
+      const statusMsg = document.getElementById('status-msg');
+      if (statusMsg) statusMsg.textContent = 'PŘIPRAV SE...';
+
+      activeGame.players.forEach((_, idx) => {
+        const t = document.getElementById(`target-${idx + 1}`);
+        if (t) {
+          t.classList.remove('show-key', 'winner-glow');
+          t.textContent = '?';
+        }
+      });
+
+      const delay = Math.random() * 2500 + 1500;
+      timeoutId = setTimeout(() => {
+        gameState = 'go';
+        activeGame.roundStartTime = performance.now();
+        beep(700, 0.15, 'square');
+        if (statusMsg) statusMsg.textContent = 'TEĎ!';
+
+        if (activeGame.mode === 'keys') {
+          const charset = diffKeys[activeGame.diff];
+          const keys = [];
+          while (keys.length < activeGame.players.length) {
+            const k = charset[Math.floor(Math.random() * charset.length)];
+            if (!keys.includes(k)) keys.push(k);
+          }
+          activeGame.currentKeys = keys;
+          keys.forEach((k, idx) => {
+            const t = document.getElementById(`target-${idx + 1}`);
+            if (t) {
+              t.textContent = k;
+              t.classList.add('show-key');
+            }
+          });
+        } else {
+          activeGame.players.forEach((_, idx) => {
+            const t = document.getElementById(`target-${idx + 1}`);
+            if (t) {
+              t.textContent = 'TAP';
+              t.classList.add('show-key');
+            }
+          });
+        }
+      }, delay);
+    }
+
+    function handleFalseStart(playerIdx) {
+      clearTimeout(timeoutId);
+      gameState = 'result';
+      beep(180, 0.4, 'sawtooth');
+      activeGame.falseStarts++;
+      const statusMsg = document.getElementById('status-msg');
+      if (statusMsg) statusMsg.textContent = `FALEŠNÝ START (${activeGame.players[playerIdx - 1].name})`;
+      setTimeout(nextMultiRound, 1800);
+    }
+
+    function handleMultiInput(winnerIdx, inputKey = null) {
+      if (gameState === 'waiting') {
+        handleFalseStart(winnerIdx);
+        return;
+      }
+      if (gameState !== 'go') return;
+
+      if (activeGame.mode === 'keys') {
+        const keyIdx = activeGame.currentKeys.indexOf(inputKey.toUpperCase());
+        if (keyIdx === -1) return;
+        winnerIdx = keyIdx + 1;
+      }
+
+      gameState = 'result';
+      const reactionTime = Math.round(performance.now() - activeGame.roundStartTime);
+      activeGame.reactions.push(reactionTime);
+
+      beep(1000, 0.2, 'sine');
+      const pts = activeGame.mode === 'keys' && activeGame.diff >= 3 ? 2 : 1;
+      activeGame.players[winnerIdx - 1].score += pts;
+
+      const targetEl = document.getElementById(`target-${winnerIdx}`);
+      if (targetEl) targetEl.classList.add('winner-glow');
+
+      const statusMsg = document.getElementById('status-msg');
+      if (statusMsg) statusMsg.textContent = `${activeGame.players[winnerIdx - 1].name} +${pts} bod (${reactionTime} ms)`;
+
+      updateMultiScores(winnerIdx);
+
+      const maxScore = Math.max(...activeGame.players.map(p => p.score));
+      if (maxScore >= activeGame.maxRounds) {
+        setTimeout(showStatsScreen, 1600);
+      } else {
+        setTimeout(nextMultiRound, 1850);
+      }
+    }
+
+    function startSoloGame() {
+      showScreen('soloGame');
+      const displayNameEl = document.getElementById('solo-display-name');
+      if (displayNameEl) displayNameEl.textContent = activeGame.name;
+
+      activeGame.score = 0;
+      activeGame.errors = 0;
+      activeGame.timeLeft = 30;
+      activeGame.isPenalized = false;
+
+      const scoreEl = document.getElementById('solo-score');
+      const timerEl = document.getElementById('solo-timer');
+      const barEl = document.getElementById('solo-progress-fill');
+      if (scoreEl) scoreEl.textContent = 0;
+      if (timerEl) timerEl.textContent = '30s';
+      if (barEl) { barEl.style.width = '100%'; barEl.style.backgroundColor = 'var(--accent)'; }
+
+      nextSoloPrompt();
+
+      activeGame.timerId = setInterval(() => {
+        activeGame.timeLeft--;
+        if (timerEl) timerEl.textContent = `${activeGame.timeLeft}s`;
+        if (barEl) {
+          const pct = Math.max(0, (activeGame.timeLeft / 30) * 100);
+          barEl.style.width = pct + '%';
+          if (activeGame.timeLeft <= 6) barEl.style.backgroundColor = 'var(--accent-red)';
+        }
+        if (activeGame.timeLeft <= 0) {
+          clearInterval(activeGame.timerId);
+          if (penaltyInterval) clearInterval(penaltyInterval);
+          showStatsScreen();
+        }
+      }, 1000);
+    }
+
+    function nextSoloPrompt() {
+      const box = document.getElementById('solo-target-box');
+      const target = document.getElementById('solo-target');
+      if (!box || !target) return;
+
+      if (activeGame.mode === 'keys') {
+        target.style.display = 'block';
+        const oldCircle = box.querySelector('.target-circle');
+        if (oldCircle) oldCircle.remove();
+
+        const charset = diffKeys[activeGame.diff];
+        activeGame.currentKey = charset[Math.floor(Math.random() * charset.length)];
+        target.textContent = activeGame.currentKey;
+        target.classList.add('show-key');
+      } else {
+        target.style.display = 'none';
+        const oldCircle = box.querySelector('.target-circle');
+        if (oldCircle) oldCircle.remove();
+
+        const circle = document.createElement('div');
+        circle.className = 'target-circle';
+
+        const boxRect = box.getBoundingClientRect();
+        const circleSize = window.innerWidth > 600 ? 86 : 68;
+        const maxLeft = Math.max(10, boxRect.width - circleSize - 20);
+        const maxTop = Math.max(10, boxRect.height - circleSize - 20);
+
+        circle.style.left = `${Math.floor(Math.random() * maxLeft)}px`;
+        circle.style.top = `${Math.floor(Math.random() * maxTop)}px`;
+        box.appendChild(circle);
+      }
+      activeGame.soloPromptTime = performance.now();
+    }
+
+    function triggerPenalty() {
+      if (activeGame.isPenalized) return;
+      activeGame.errors++;
+      activeGame.isPenalized = true;
+      beep(150, 0.4, 'sawtooth');
+
+      const overlay = document.getElementById('penalty-overlay');
+      const penaltyTimer = document.getElementById('penalty-timer');
+      if (overlay && penaltyTimer) {
+        overlay.style.display = 'flex';
+        let countdown = 3;
+        penaltyTimer.textContent = countdown;
+
+        if (penaltyInterval) clearInterval(penaltyInterval);
+        penaltyInterval = setInterval(() => {
+          countdown--;
+          if (countdown > 0) {
+            penaltyTimer.textContent = countdown;
+          } else {
+            clearInterval(penaltyInterval);
+            overlay.style.display = 'none';
+            activeGame.isPenalized = false;
+            nextSoloPrompt();
+          }
+        }, 1000);
+      }
+    }
+
+    function handleSoloInput(inputArg = null) {
+      if (activeGame.timeLeft <= 0 || activeGame.isPenalized) return;
+
+      if (activeGame.mode === 'keys') {
+        if (!inputArg || typeof inputArg !== 'string' || inputArg.toUpperCase() !== activeGame.currentKey) {
+          triggerPenalty();
+          return;
+        }
+      } else if (inputArg !== true) {
+        triggerPenalty();
+        return;
+      }
+
+      const rt = Math.round(performance.now() - activeGame.soloPromptTime);
+      activeGame.reactions.push(rt);
+      activeGame.score += 1;
+      const scoreEl = document.getElementById('solo-score');
+      if (scoreEl) {
+        scoreEl.textContent = activeGame.score;
+        scoreEl.classList.remove('score-pop');
+        void scoreEl.offsetWidth;
+        scoreEl.classList.add('score-pop');
+      }
+      beep(900, 0.1, 'sine');
+      nextSoloPrompt();
+    }
+
+    function showStatsScreen() {
+      showScreen('stats');
+      launchConfetti();
+      const content = document.getElementById('stats-content');
+      if (!content) return;
+
+      const avgReaction = activeGame.reactions.length
+        ? Math.round(activeGame.reactions.reduce((a, b) => a + b, 0) / activeGame.reactions.length)
+        : 0;
+
+      let baseCoins = 0;
+      if (activeGame.type === 'solo') {
+        const errorPenalty = activeGame.errors * 2;
+        baseCoins = Math.max(0, Math.floor(activeGame.score * (activeGame.mode === 'keys' ? 1.5 : 0.8)) - errorPenalty);
+      } else {
+        const diffMultiplier = activeGame.diff >= 4 ? 3 : (activeGame.diff >= 2 ? 2 : 1);
+        const maxScore = Math.max(...activeGame.players.map(p => p.score));
+        baseCoins = maxScore * diffMultiplier * 2;
+      }
+
+      const finalCoins = baseCoins * userData.activeBoost;
+      userData.coins += finalCoins;
+      const usedBoostMultiplier = userData.activeBoost;
+      userData.activeBoost = 1;
+
+      saveUser();
+      games.push(activeGame);
+      try { localStorage.setItem('speedTapGames', JSON.stringify(games)); } catch (e) {}
+      renderGameHistory();
+
+      if (activeGame.type === 'solo') {
+        content.innerHTML = `
+          <div class="stat-line"><span style="color:var(--text-sub)">Režim</span><strong>Trénink (Solo)</strong></div>
+          <div class="stat-line"><span style="color:var(--text-sub)">Úspěšné trefy</span><strong class="mono">${activeGame.score}</strong></div>
+          <div class="stat-line"><span style="color:var(--text-sub)">Počet chyb</span><strong class="mono" style="color:var(--accent-red)">${activeGame.errors}</strong></div>
+          <div class="stat-line"><span style="color:var(--text-sub)">Průměrná reakce</span><strong class="mono">${avgReaction} ms</strong></div>
+          ${usedBoostMultiplier > 1 ? `<div class="stat-line"><span style="color:var(--text-sub)">Boost</span><strong style="color:var(--accent-green)">${usedBoostMultiplier}x</strong></div>` : ''}
+          <div class="stat-line"><span style="color:var(--text-sub)">Získané coiny</span><strong class="mono" style="color:var(--accent-orange)">+${finalCoins} C</strong></div>
+        `;
+      } else {
+        const winner = activeGame.players.reduce((prev, cur) => (prev.score > cur.score ? prev : cur));
+        content.innerHTML = `
+          <div class="stat-line"><span style="color:var(--text-sub)">Vítěz</span><strong style="color:var(--accent-green)">${winner.name} (${winner.score} b.)</strong></div>
+          <div class="stat-line"><span style="color:var(--text-sub)">Průměrná reakce</span><strong class="mono">${avgReaction} ms</strong></div>
+          <div class="stat-line"><span style="color:var(--text-sub)">Falešné starty</span><strong class="mono">${activeGame.falseStarts}</strong></div>
+          ${usedBoostMultiplier > 1 ? `<div class="stat-line"><span style="color:var(--text-sub)">Boost</span><strong style="color:var(--accent-green)">${usedBoostMultiplier}x</strong></div>` : ''}
+          <div class="stat-line"><span style="color:var(--text-sub)">Získané coiny</span><strong class="mono" style="color:var(--accent-orange)">+${finalCoins} C</strong></div>
+        `;
+      }
+      updateUIUser();
+    }
+  </script>
 </body>
 </html>
